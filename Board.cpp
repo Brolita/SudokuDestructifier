@@ -1,8 +1,12 @@
 #include <time.h> 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string>
 #include <unistd.h>
-#include <cmath.h>
+#include <cmath>
+#include <iostream>
+#include <iomanip>
+#include "Board.h"
 
 #define ROW 0
 #define COL 1
@@ -15,7 +19,7 @@ Board::Board(int s)
 	data = new char[s*s];
 	for(int i = 0; i < s*s; i++)
 	{
-		data[i] = 0;
+		data[i] = '.';
 	}
 }
 
@@ -26,7 +30,7 @@ Board::~Board()
 
 int Board::Index(int x, int y)
 {
-	return y * size + x;
+	return y * boxSize + x;
 }
 
 int Board::Index(int ox, int oy, int bx, int by)
@@ -53,7 +57,7 @@ char& Board::operator[] (int index)
 {
 	return data[index];
 }
-
+/*
 char& Board::operator[] (int x, int y)
 {
 	return data[Index(x, y)];
@@ -63,7 +67,7 @@ char& Board::operator[] (int ox, int oy, int bx, int by)
 {
 	return data[Index(ox, oy, bx, by)];
 }
-
+*/
 /* Dependency for an index
  *  	         
  * Example, dependencies for D
@@ -107,18 +111,21 @@ char& Board::operator[] (int ox, int oy, int bx, int by)
 void Swap(int* a, int*b)
 {
 	int n = *a;
-	*a = b;
+	*a = *b;
 	*b = n;
 }
  
+ /*
 char*** Board::Dependency(int index)
-{
-	char*** v = new char*[3][size - 1];
+{ 
+	int tempsize = size;
+	char temp[3][tempsize-1];
+	char* v[3][tempsize-1];
 	
-	int[] argBoxRow = new int[boxSize];
-	int[] argBoxCol = new int[boxSize];
-	int[] argRow = new int[boxSize];
-	int[] argCol = new int[boxSize];
+	int argBoxRow[boxSize];
+	int argBoxCol[boxSize];
+	int argRow[boxSize];
+	int argCol[boxSize];
 	
 	for(int i = 0; i < size; i++)
 	{
@@ -138,7 +145,7 @@ char*** Board::Dependency(int index)
 	Swap(&argRow[0], 	&argRow[bx]);
 	Swap(&argCol[0], 	&argCol[by]);
 	
-	for(i = 1; i < size; i++)
+	for(int i = 1; i < size; i++)
 	{
 		int b = i % boxSize;
 		int a = i / boxSize;
@@ -151,7 +158,47 @@ char*** Board::Dependency(int index)
 	return v;
 }
 
+
 char*** Board::operator() (int index)
 {
 	return Dependency(index);
 }
+*/
+bool Board::isValid()
+{
+	//for (int i=0; i<)
+	return true;
+}
+
+void Board::printBoard()
+{
+	int len = (int) sqrt((double) boxSize);
+	int maxLen = (int) log10((double)boxSize) + 1;
+	std::string horizontal = std::string(2*len + boxSize*(maxLen+1) + 1, '-');
+	int count = 0;
+	for (int i=0; i<horizontal.length()-2*count; i++) {
+		if (i%(len*(maxLen+1)) == 0) {
+			horizontal[i+2*count] = '+';
+			count++;
+		}
+	}
+	std::cout << maxLen << std::endl;
+	std::cout << len << std::endl;
+	std::cout << horizontal << std::endl;
+	for (int i=0; i<boxSize; i++){
+		std::cout << "| ";
+		for (int j=0; j<boxSize; j++) {
+			std::cout << std::setw(maxLen) << this->Get(i,j) << " ";
+			if ((j+1)%len == 0) {
+				std::cout << "| ";
+			}
+		}
+		std::cout << std::endl;
+		if ( (i+1)%len == 0) {
+			std::cout << horizontal << std::endl;
+		}
+	}
+	//std::cout << TopBottom << std::endl;
+}
+
+

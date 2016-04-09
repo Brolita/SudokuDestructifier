@@ -1,11 +1,12 @@
+#ifndef BOARD
+#define BOARD
+
 #include <time.h> 
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <cmath.h>
+#include <cmath>
 
-#ifndef BOARD
-#define BOARD
 
 class Board 
 {
@@ -23,17 +24,21 @@ class Board
 		char& Get(int x, int y);
 		char& Get(int ox, int oy, int bx, int by);
 		char& operator[] (int index);
-		char& operator[] (int x, int y);
-		char& operator[] (int ox, int oy, int bx, int by);
+		//char& operator[] (int x, int y);
+		//char& operator[] (int ox, int oy, int bx, int by);
+		
+		bool isValid();
+		void printBoard();
+		
 		
 		// extraction for Assignment Neural Net
-		char*** Dependency(int index);
-		char*** operator() (int index);
+		//char*** Dependency(int index);
+		//char*** operator() (int index);
 		
 		// extraction for Policy Neural Net
 		//...
 	private:
-		struct char* data;
-}
+		char* data;
+};
 
 #endif
