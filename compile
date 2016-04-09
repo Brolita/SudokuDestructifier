@@ -1,0 +1,1 @@
+g++ main.cpp Board.cpp Destructifier.cpp Solver.cpp "Puzzle Generator.cpp" -o SudokuDestructifier

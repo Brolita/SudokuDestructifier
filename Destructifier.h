@@ -1,10 +1,11 @@
-#include <time.h> 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <cmath.h>
+#include "Build Settings.h"
 
 #ifndef DESTRUCTIFIER
 #define DESTRUCTIFIER
+
+class Destructifier
+{
+
+};
 
 #endif

@@ -1,32 +1,16 @@
-#include <time.h> 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <cmath.h>
+#include "Build Settings.h"
 
+//For Dependancy
 #define ROW 0
 #define COL 1
 #define BOX 2
 
-Board::Board(int s)
-{
-	size = s;
-	boxSize = (int) sqrt((double) s);
-	data = new char[s*s];
-	for(int i = 0; i < s*s; i++)
-	{
-		data[i] = 0;
-	}
-}
-
-Board::~Board()
-{
-	free(data);
-}
+Board::Board()
+{ }
 
 int Board::Index(int x, int y)
 {
-	return y * size + x;
+	return y * colSize + x;
 }
 
 int Board::Index(int ox, int oy, int bx, int by)
@@ -52,16 +36,6 @@ char& Board::Get(int ox, int oy, int bx, int by)
 char& Board::operator[] (int index)
 {
 	return data[index];
-}
-
-char& Board::operator[] (int x, int y)
-{
-	return data[Index(x, y)];
-}
-
-char& Board::operator[] (int ox, int oy, int bx, int by)
-{
-	return data[Index(ox, oy, bx, by)];
 }
 
 /* Dependency for an index
@@ -104,21 +78,22 @@ char& Board::operator[] (int ox, int oy, int bx, int by)
  */
  
 // a good shorthand
-void Swap(int* a, int*b)
+template <class T>
+void Swap(T* a, T* b)
 {
-	int n = *a;
-	*a = b;
+	T n = *a;
+	*a = *b;
 	*b = n;
 }
  
 char*** Board::Dependency(int index)
 {
-	char*** v = new char*[3][size - 1];
-	
-	int[] argBoxRow = new int[boxSize];
-	int[] argBoxCol = new int[boxSize];
-	int[] argRow = new int[boxSize];
-	int[] argCol = new int[boxSize];
+	char*** v = (char***) new char*[3][size - 1];
+
+	int argBoxRow[boxSize];
+	int argBoxCol[boxSize];
+	int argRow[boxSize];
+	int argCol[boxSize];
 	
 	for(int i = 0; i < size; i++)
 	{
@@ -138,14 +113,14 @@ char*** Board::Dependency(int index)
 	Swap(&argRow[0], 	&argRow[bx]);
 	Swap(&argCol[0], 	&argCol[by]);
 	
-	for(i = 1; i < size; i++)
+	for(int i = 1; i < size; i++)
 	{
 		int b = i % boxSize;
 		int a = i / boxSize;
 		
-		v[ROW][i-1] = &this[argBoxCol[a], argBoxRow[0], argCol[0], argRow[b]];
-		v[COL][i-1] = &this[argBoxCol[0], argBoxRow[a], argCol[b], argRow[0]];
-		v[BOX][i-1] = &this[argBoxCol[0], argBoxRow[0], argCol[a], argRow[b]];
+		v[ROW][i-1] = &data[argBoxCol[a], argBoxRow[0], argCol[0], argRow[b]];
+		v[COL][i-1] = &data[argBoxCol[0], argBoxRow[a], argCol[b], argRow[0]];
+		v[BOX][i-1] = &data[argBoxCol[0], argBoxRow[0], argCol[a], argRow[b]];
 	}
 	
 	return v;
