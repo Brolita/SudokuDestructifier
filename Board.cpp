@@ -6,7 +6,10 @@
 #define BOX 2
 
 Board::Board()
-{ }
+{ 
+	for(int i = 0; i < boardSize; i++)
+		data[i] = 1;
+}
 
 int Board::Index(int x, int y)
 {
@@ -86,6 +89,7 @@ void Swap(T* a, T* b)
 	*b = n;
 }
  
+
 char*** Board::Dependency(int index)
 {
 	char*** v = (char***) new char*[3][size - 1];
@@ -126,7 +130,48 @@ char*** Board::Dependency(int index)
 	return v;
 }
 
+
 char*** Board::operator() (int index)
 {
 	return Dependency(index);
 }
+
+bool Board::isValid()
+{
+	//for (int i=0; i<)
+	return true;
+}
+
+void Board::printBoard()
+{
+	int maxLen = (int) log10((double)size) + 1;
+	std::string horizontal = std::string(2*boxSize + size*(maxLen+1) + 1, '-');
+	int count = 0;
+	for (int i=0; i<horizontal.length()-2*count; i++) {
+		if (i%(boxSize*(maxLen+1)) == 0) {
+			horizontal[i+2*count] = '+';
+			count++;
+		}
+	}
+	std::cout << horizontal << std::endl;
+	for (int i=0; i<size; i++){
+		std::cout << "| ";
+		for (int j=0; j<size; j++) {
+			std::cout << std::setw(maxLen)
+				<< (this->Get(i,j) != 0 
+					? (char) (this->Get(i,j) + '0')
+					: (char) ' ' ) 
+				<< " ";
+			if ((j+1)%boxSize == 0) {
+				std::cout << "| ";
+			}
+		}
+		std::cout << std::endl;
+		if ( (i+1)%boxSize == 0) {
+			std::cout << horizontal << std::endl;
+		}
+	}
+	//std::cout << TopBottom << std::endl;
+}
+
+

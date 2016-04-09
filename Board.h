@@ -16,6 +16,9 @@ class Board
 		char& Get(int ox, int oy, int bx, int by);
 		char& operator[] (int index);
 		
+		bool isValid();
+		void printBoard();
+		
 		// extraction for Assignment Neural Net
 		char*** Dependency(int index);
 		char*** operator() (int index);
@@ -23,7 +26,7 @@ class Board
 		// extraction for Policy Neural Net
 		//...
 	private:
-		char* data;
+		char data[boardSize];
 };
 
 #endif
