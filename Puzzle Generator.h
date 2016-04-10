@@ -6,7 +6,7 @@
 class PuzzleGenerator
 {
 	public:
-		static int Generate(FILE* output);
+		static Board GenerateMinimum();	
 };
 
 #endif

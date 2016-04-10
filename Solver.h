@@ -3,16 +3,11 @@
 #ifndef SOLVER
 #define SOLVER
 
-class Mutation {
-	int index;
-	char value;
-};
-
 class Solver
 {
 	public:
-		static std::list<Mutation> Solve(Board& board);
-		static bool UniquelySolvable(Board& board);
+		static void Solve(Board& board, Mutation muts[boardSize]);
+		static bool CanPlace(char value, char* dependency[3][size-1]);
 };
 
 #endif

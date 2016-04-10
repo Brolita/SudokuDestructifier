@@ -1,24 +1,20 @@
 #include "Build Settings.h"
 
-//For Dependancy
-#define ROW 0
-#define COL 1
-#define BOX 2
-
 Board::Board()
 { 
+	memset(data, 0, boardSize);
 	for(int i = 0; i < boardSize; i++)
-		data[i] = 1;
+		this->Dependency(i, dependencys[i]);
 }
 
 int Board::Index(int x, int y)
 {
-	return y * colSize + x;
+	return x + y * colSize;
 }
 
-int Board::Index(int ox, int oy, int bx, int by)
+int Board::Index(int bx, int by, int ox, int oy)
 {
-	return (oy * boxSize + by) * size + ox * boxSize + bx;
+	return ((bx * boxSize) + ox) + (((by * boxSize) + oy) * size);
 }
 
 char& Board::Get(int index)
@@ -31,9 +27,9 @@ char& Board::Get(int x, int y)
 	return data[Index(x, y)];
 }
 
-char& Board::Get(int ox, int oy, int bx, int by)
+char& Board::Get(int bx, int by, int ox, int oy)
 {
-	return data[Index(ox, oy, bx, by)];
+	return data[Index(bx, by, ox, oy)];
 }
 
 char& Board::operator[] (int index)
@@ -89,17 +85,14 @@ void Swap(T* a, T* b)
 	*b = n;
 }
  
-
-char*** Board::Dependency(int index)
+void Board::Dependency(int index, char* v[3][size - 1])
 {
-	char*** v = (char***) new char*[3][size - 1];
-
 	int argBoxRow[boxSize];
 	int argBoxCol[boxSize];
 	int argRow[boxSize];
 	int argCol[boxSize];
 	
-	for(int i = 0; i < size; i++)
+	for(int i = 0; i < boxSize; i++)
 	{
 		argBoxCol[i] = i;
 		argBoxRow[i] = i;
@@ -109,31 +102,39 @@ char*** Board::Dependency(int index)
 	
 	int x = index % size, y = index / size;
 	
-	int ox = x / boxSize, oy = y / boxSize;
-	int bx = x % boxSize, by = y % boxSize;
+	int bx = x / boxSize, by = y / boxSize;
+	int ox = x % boxSize, oy = y % boxSize;
 	
-	Swap(&argBoxRow[0], &argBoxRow[ox]);
-	Swap(&argBoxCol[0], &argBoxCol[oy]);
-	Swap(&argRow[0], 	&argRow[bx]);
-	Swap(&argCol[0], 	&argCol[by]);
+	Swap(&argBoxRow[0], &argBoxRow[bx]);
+	Swap(&argBoxCol[0], &argBoxCol[by]);
+	Swap(&argRow[0], 	&argRow[ox]);
+	Swap(&argCol[0], 	&argCol[oy]);
 	
 	for(int i = 1; i < size; i++)
 	{
 		int b = i % boxSize;
 		int a = i / boxSize;
-		
-		v[ROW][i-1] = &data[argBoxCol[a], argBoxRow[0], argCol[0], argRow[b]];
-		v[COL][i-1] = &data[argBoxCol[0], argBoxRow[a], argCol[b], argRow[0]];
-		v[BOX][i-1] = &data[argBoxCol[0], argBoxRow[0], argCol[a], argRow[b]];
+
+		v[ROW][i-1] = &Get(argBoxRow[a], argBoxCol[0], argRow[b], argCol[0]);
+		v[COL][i-1] = &Get(argBoxRow[0], argBoxCol[a], argRow[0], argCol[b]);
+		v[BOX][i-1] = &Get(argBoxRow[0], argBoxCol[0], argRow[a], argCol[b]);
 	}
-	
-	return v;
 }
 
-
-char*** Board::operator() (int index)
+void Board::SolvedPositions(bool o[boardSize])
 {
-	return Dependency(index);
+	for(int i = 0; i < boardSize; i++)
+		o[i] = data[i] != 0;
+}
+
+void Board::Clear()
+{
+	memset(data, 0, boardSize);
+}
+
+void Board::Apply(Mutation m)
+{
+	data[m.index] = m.value;
 }
 
 bool Board::isValid()
@@ -154,20 +155,24 @@ void Board::printBoard()
 		}
 	}
 	std::cout << horizontal << std::endl;
-	for (int i=0; i<size; i++){
+	for (int y = 0; y<size; y++){
 		std::cout << "| ";
-		for (int j=0; j<size; j++) {
+		for (int x = 0; x<size; x++) {
+			char print = this->Get(x,y);
+			if(print == 0)
+				print = ' ';
+			else if(print < 10)
+				print += '0';
+			else 
+				print += 'a' - 10;
 			std::cout << std::setw(maxLen)
-				<< (this->Get(i,j) != 0 
-					? (char) (this->Get(i,j) + '0')
-					: (char) ' ' ) 
-				<< " ";
-			if ((j+1)%boxSize == 0) {
+				<< print << " ";
+			if ((x+1)%boxSize == 0) {
 				std::cout << "| ";
 			}
 		}
 		std::cout << std::endl;
-		if ( (i+1)%boxSize == 0) {
+		if ( (y+1)%boxSize == 0) {
 			std::cout << horizontal << std::endl;
 		}
 	}

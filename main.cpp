@@ -2,6 +2,7 @@
 
 int main(int argc, char* argv[])
 {
-	Board b = Board();
+	srand (time(NULL));
+	Board b = PuzzleGenerator::GenerateMinimum();
 	b.printBoard();
 }
