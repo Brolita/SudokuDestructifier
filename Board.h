@@ -30,7 +30,7 @@ class Board
 		
 		// extraction for Assignment Neural Net 
 		// also useful for solution algorithms
-		char* dependencys[boardSize][3][size-1];
+		char* dependencies[boardSize][3][size-1];
 		
 		// extraction for Policy Neural Net
 		void SolvedPositions(bool o[boardSize]);
