@@ -4,7 +4,7 @@ Board::Board()
 { 
 	memset(data, 0, boardSize);
 	for(int i = 0; i < boardSize; i++)
-		this->Dependency(i, dependencys[i]);
+		this->Dependency(i, dependencies[i]);
 }
 
 int Board::Index(int x, int y)

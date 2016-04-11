@@ -44,7 +44,7 @@ bool PlaceNext(int insert, int b, Board& board, Mutation muts[boardSize])
 		int oy = o / boxSize, ox = o % boxSize;
 		int index = board.Index(bx,by,ox,oy);
 		bool placeable = board[index] == 0
-			&& Solver::CanPlace(insert, board.dependencys[index]);
+			&& Solver::CanPlace(insert, board.dependencies[index]);
 		if(placeable) 
 		{
 			candidates[count] = index;
