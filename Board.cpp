@@ -166,7 +166,7 @@ void Board::printBoard()
 			else 
 				print += 'a' - 10;
 			std::cout << std::setw(maxLen)
-				<< print << " ";
+					  << print << " ";
 			if ((x+1)%boxSize == 0) {
 				std::cout << "| ";
 			}

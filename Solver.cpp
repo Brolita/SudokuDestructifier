@@ -13,3 +13,5 @@ bool Solver::CanPlace(char value, char* dependency[3][size-1])
 	}
 	return true;
 }
+
+

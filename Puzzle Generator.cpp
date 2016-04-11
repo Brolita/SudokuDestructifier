@@ -1,7 +1,5 @@
 #include "Build Settings.h"
 
-using namespace std;
-
 void GenerateFull(Board& board, Mutation muts[boardSize]);
 
 template<class T>
@@ -64,6 +62,9 @@ bool PlaceNext(int insert, int b, Board& board, Mutation muts[boardSize])
 		board[candidates[i]] = insert;
 		m->index = candidates[i];
 		m->value = insert;
+		
+		std::cout << move_to(board1y, 1);
+		board.printBoard();
 		
 		if(PlaceNext(insert + (b + 1)/size, (b + 1)%size, board, muts))
 			return true;
