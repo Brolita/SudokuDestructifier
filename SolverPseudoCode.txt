@@ -1,0 +1,29 @@
+w/o mutations
+
+for position in board
+	find minimum branch
+if the branch is 0
+	return can not solve
+else
+	for value in branchable values
+		recurse
+		if solution was found
+			return can solve
+	return can not solve
+	
+	
+	
+w/ mutations
+	
+for position in board
+	find minimum branch
+if the branch is 0
+	return can not solve
+else
+	for value in branchable values 
+		if value = mutation value
+			continue
+		recurse
+		if solution was found
+			return can solve
+	return can not solve
