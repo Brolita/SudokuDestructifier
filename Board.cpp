@@ -139,7 +139,74 @@ void Board::Apply(Mutation m)
 
 bool Board::isValid()
 {
-	//for (int i=0; i<)
+	
+	for (int i=0; i<boxSize; i++){
+		for (int j=0; j<boxSize; j++){
+			//std::cout << i << " " << j << std::endl;
+			int val = this->Index(i,j,j,i);
+			char* depend[3][size-1];
+			this->Dependency(val,depend);
+			for (int k=0; k<3; k++) {
+				bool check[size];
+				for (int l=0; l<size-1; l++){
+					if (*depend[k][l] == 0) {
+						//std::cout << "fails here" << std::endl;
+						return false;
+					}
+					//std::cout << char(*depend[k][l] + '0') << " at " << k << " " << l << std::endl;
+					if (!check[*depend[k][l]-1]){
+						check[*depend[k][l]-1] = true;
+					}
+					else {
+						//std::cout << "fails here1" << std::endl;
+						return false;
+					}
+				}
+				if (!check[this->Get(i,j,j,i)-1]) {
+					check[this->Get(i,j,j,i)-1] = true;
+				}
+				else {
+					//std::cout << "fails here2" << std::endl;
+					return false;
+				}
+				for (int l=0; l<size; l++) {
+					//std::cout << "fails here3" << std::endl;
+					if (!check[l]) return false;
+					check[l] = false;
+				}
+			}
+		}
+	}
+	
+	/*
+	for (int i=0; i<boardSize; i++) {
+		//check box
+		for (int j=0; j<size; j++){
+			int val = (i/size/boxSize)*boxSize*size + ((i%size)/boxSize)*boxSize;
+			val = val + j%boxSize + (j/boxSize)*size;
+			if (val == i) continue;
+			if (data[val] == data[i]) {
+				return false;
+			}
+		}
+		//check row
+		for (int j=0;j<rowSize;j++){
+			int val = i/size*size + j;
+			if (val == i) continue;
+			if (data[val] == data[i]) {
+				return false;
+			}
+		}
+		//check column
+		for (int j=0;j<colSize;j++){
+			int val = j*size + i%size;
+			if (val == i) continue;
+			if (data[val] == data[i]) {
+				return false;
+			}
+		}
+	}
+	*/
 	return true;
 }
 
