@@ -13,6 +13,7 @@
 #include <iomanip>
 #include <fstream>
 #include <signal.h> 
+#include <sys/types.h>
 
 #include "vt100.h"
 //For advance output
