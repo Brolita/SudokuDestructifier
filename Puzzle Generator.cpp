@@ -19,7 +19,7 @@ Board PuzzleGenerator::GenerateMinimum()
 	
 	InplaceShuffle(muts, boardSize);
 	
-	//BinarySearchMinimum(board, muts, boardSize/2, boardSize);
+	BinarySearchMinimum(board, muts, boardSize/2, boardSize);///
 	
 	return board;
 }

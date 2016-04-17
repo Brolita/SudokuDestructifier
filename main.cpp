@@ -8,6 +8,15 @@ void onCtrlC(int i)
 
 int main(int argc, char* argv[])
 {
+	/*
+	using namespace std;
+	srand (time(NULL));
+	Board b = PuzzleGenerator::GenerateMinimum();
+	cout << clear_screen << move_to(BOARD1Y, 1);
+	b.printBoard();
+	Solver::Solve(b);
+	return 0;
+	*/
 	signal (SIGINT,onCtrlC);
 	
 	std::cout << clear_screen

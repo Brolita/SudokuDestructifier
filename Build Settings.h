@@ -28,6 +28,17 @@
 #define board2y (board1y + outputSize + 2)
 #define board3y (board2y + outputSize + 2)
 
+//coreeeeeeeeeeey
+#define BOXSIZE boxSize
+#define SIZE size
+#define COLSIZE colSize
+#define ROWSIZE rowSize
+#define BOARDSIZE boardSize
+#define OUTPUTSIZE outputSize
+#define BOARD1Y board1y
+#define BOARD2Y board2y
+#define BOARD3Y board3y
+
 //For Dependancy
 #define ROW 0
 #define COL 1
