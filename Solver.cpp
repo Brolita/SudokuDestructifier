@@ -34,6 +34,8 @@ bool Solver::Solve(Board& board)
 {
 	int minbranch = NULLHI;
 	int argminbranch = -1;
+	bool vals[SIZE+1]; //to ensure CanPlace is called as infrequently as possible
+	bool minvals[SIZE+1];
 	for(int ci = 0; ci < BOARDSIZE; ++ci) //for each cell
 	{
 		if(board[ci] == 0) //for each empty cell
@@ -41,7 +43,12 @@ bool Solver::Solve(Board& board)
 			int nbranch = 0;
 			for(int vi = 1; vi < SIZE + 1; ++vi) //for each value
 			{
-				nbranch += CanPlace(vi, board.dependencies[ci]);
+				if(nbranch == minbranch) //already too far
+				{
+					break;
+				}
+				vals[vi] = CanPlace(vi, board.dependencies[ci]);
+				nbranch += vals[vi];
 			}
 			
 			if(nbranch == 0) //empty cell with no possible value
@@ -52,14 +59,15 @@ bool Solver::Solve(Board& board)
 			{
 				minbranch = nbranch;
 				argminbranch = ci;
+				for(int vi = 1; vi < SIZE + 1; ++vi) minvals[vi] = vals[vi];
 			}
 		}
 	}
-	if(argminbranch == -1)  return 1; //no unfilled cells remain
+	if(argminbranch == -1) return 1; //no unfilled cells remain
 	
 	for(int vi = 1; vi < SIZE + 1; ++vi) //for each value
 	{
-		if(CanPlace(vi, board.dependencies[argminbranch])) //for each allowed value
+		if(minvals[vi]) //for each allowed value
 		{
 			board[argminbranch] = vi;
 			if(Solve(board)) return 1; //recurse with mutation added

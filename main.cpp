@@ -18,7 +18,6 @@ int main(int argc, char* argv[])
 	bool x = Solver::Solve(b);
 	cout << "final: solved? = " << x << endl;
 	b.printBoard();
-	//cout << (int)argv[1][0] << endl;
 	return 0;
 	
 	
