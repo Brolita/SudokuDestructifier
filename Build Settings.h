@@ -39,6 +39,7 @@
 #define BOARD1Y board1y
 #define BOARD2Y board2y
 #define BOARD3Y board3y
+#define NULLHI BOARDSIZE + 1
 
 //For Dependancy
 #define ROW 0

@@ -14,9 +14,12 @@ int main(int argc, char* argv[])
 	Board b = PuzzleGenerator::GenerateMinimum();
 	cout << clear_screen << move_to(BOARD1Y, 1);
 	b.printBoard();
-	Solver::Solve(b);
+	bool x = Solver::Solve(b);
+	cout << "final: solved? = " << x << endl;
+	b.printBoard();
 	return 0;
 	*/
+	
 	signal (SIGINT,onCtrlC);
 	
 	std::cout << clear_screen
