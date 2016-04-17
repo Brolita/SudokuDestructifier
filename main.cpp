@@ -8,17 +8,19 @@ void onCtrlC(int i)
 
 int main(int argc, char* argv[])
 {
-	/*
+	
 	using namespace std;
 	srand (time(NULL));
 	Board b = PuzzleGenerator::GenerateMinimum();
 	cout << clear_screen << move_to(BOARD1Y, 1);
 	b.printBoard();
+	//bool x = Solver::BruteSolve(b);
 	bool x = Solver::Solve(b);
 	cout << "final: solved? = " << x << endl;
 	b.printBoard();
+	//cout << (int)argv[1][0] << endl;
 	return 0;
-	*/
+	
 	
 	signal (SIGINT,onCtrlC);
 	

@@ -20,7 +20,8 @@ Board PuzzleGenerator::GenerateMinimum()
 	InplaceShuffle(muts, boardSize);
 	
 	//generate half-full puzzle:
-	BinarySearchMinimum(board, muts, boardSize/2, boardSize);
+	//BinarySearchMinimum(board, muts, BOARDSIZE/2, boardSize);
+	BinarySearchMinimum(board, muts, 20, boardSize); //probably few solutions for size 3
 	
 	return board;
 }

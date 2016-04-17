@@ -1,3 +1,18 @@
+/*
+      _____________
+     /             \
+	/               \
+   /       ___       \
+  /   ___ / S \ ___   \
+ /   / S \\___// K \   \
+ \   \___/     \___/   /
+  \___________________/
+    \  |  \| |/  |  /
+     \ |         | /
+      \|         |/
+I'm literally too good TM
+*/
+
 #include <typeinfo>
 #include "Build Settings.h"
 
@@ -26,12 +41,11 @@ bool Solver::Solve(Board& board)
 			int nbranch = 0;
 			for(int vi = 1; vi < SIZE + 1; ++vi) //for each value
 			{
-				nbranch += Solver::CanPlace(vi, board.dependencies[ci]);
+				nbranch += CanPlace(vi, board.dependencies[ci]);
 			}
 			
 			if(nbranch == 0) //empty cell with no possible value
 			{
-				std::cout << "Solver::Solve: backtrack attempted" << std::endl;
 				return 0;
 			}
 			if(nbranch < minbranch) //best cell so far
@@ -43,25 +57,32 @@ bool Solver::Solve(Board& board)
 	}
 	if(argminbranch == -1)  return 1; //no unfilled cells remain
 	
-	if(minbranch != 1)
-	{
-		std::cerr << "Solver::Solve WARNING: backtracking not yet verified: " << minbranch << std::endl;
-	}
-	
 	for(int vi = 1; vi < SIZE + 1; ++vi) //for each value
 	{
-		if(Solver::CanPlace(vi, board.dependencies[argminbranch])) //for each allowed value
+		if(CanPlace(vi, board.dependencies[argminbranch])) //for each allowed value
 		{
 			board[argminbranch] = vi;
-			if(Solver::Solve(board)) return 1; //recurse with mutation added
-			else board[argminbranch] = 0; //roll back mutation; try more values before returning
+			if(Solve(board)) return 1; //recurse with mutation added
+			else board[argminbranch] = 0; //roll back mutation & try different value
 		}
 	}
-	
-	std::cerr << "Solver::solve ERORR: all values invalid for valid cell " << argminbranch << std::endl;
-	//error handling?
+	return 0; //empty cell with no possible value
 }
 
-bool BruteSolve(Board& board) { //for testing Solve()
-	//things
+bool Solver::BruteSolve(Board& board) { //DFS for testing Solve()
+	using namespace std;
+	bool solved = 1;
+	for(int ci = 0; ci < BOARDSIZE; ++ci) {
+		if(board[ci] == 0) {
+			solved = 0;
+			for(int vi = 1; vi < SIZE + 1; ++vi) {
+				if(Solver::CanPlace(vi, board.dependencies[ci])) {
+					board[ci] = vi;
+					if(BruteSolve(board)) return 1;
+					else board[ci] = 0;
+				}
+			}
+		}
+	}
+	return solved;
 }
