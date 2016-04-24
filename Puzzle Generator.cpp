@@ -1,77 +1,82 @@
 #include "Build Settings.h"
 
-void GenerateFull(Board& board, Mutation muts[boardSize]);
+void GenerateFull(Board& board, Mutation muts[BOARDSIZE]);
 
 template<class T>
 void InplaceShuffle(T* a, size_t n);
 
-bool PlaceNext(int insert, int b, Board& board, Mutation muts[boardSize]);
+bool PlaceNext(int insert, int b, Board& board, Mutation muts[BOARDSIZE]);
 
-void BinarySearchMinimum(Board& board, Mutation muts[boardSize],
-	int at, int remaining);
+int BinarySearchMinimum(Board& board, Board& completeBoard,
+	const Mutation muts[BOARDSIZE], int at, int remaining);
 
 Board PuzzleGenerator::GenerateMinimum()
 {
 	Board board;
-	Mutation muts[boardSize];
+	Mutation muts[BOARDSIZE];
 	
 	GenerateFull(board, muts);
 	
-	InplaceShuffle(muts, boardSize);
+	InplaceShuffle(muts, BOARDSIZE);
 	
-	//generate half-full puzzle:
-	//BinarySearchMinimum(board, muts, BOARDSIZE/2, boardSize);
-	BinarySearchMinimum(board, muts, 20, boardSize); //probably few solutions for size 3
+	Board completeBoard(board);
+	int solution = BinarySearchMinimum(board, completeBoard, muts, BOARDSIZE/2, BOARDSIZE/2);
+	
+	board.Clear();
+	for(int i = 0; i < solution; i++)
+	{
+		board.Apply(muts[i]);
+	}
 	
 	return board;
 }
 	
-void GenerateFull(Board& board, Mutation muts[boardSize])
+void GenerateFull(Board& board, Mutation muts[BOARDSIZE])
 {	
 	PlaceNext(1, 0, board, muts);
 }
 
-bool PlaceNext(int insert, int b, Board& board, Mutation muts[boardSize])
+bool PlaceNext(int insert, int b, Board& board, Mutation muts[BOARDSIZE])
 {	
-	if(insert == size+1)
+	if(insert == SIZE+1) // end condition
 		return true;
 	
-	int by = b / boxSize, bx = b % boxSize;
+	int by = b / BOXSIZE, bx = b % BOXSIZE;	// box from iterator
 	int count = 0;
-	int candidates[size];
-	for(int o = 0; o < size; o++)
+	int candidates[SIZE]; // candidates positions in the box, max of the size of the box
+	for(int o = 0; o < SIZE; o++)
 	{
-		int oy = o / boxSize, ox = o % boxSize;
-		int index = board.Index(bx,by,ox,oy);
-		bool placeable = board[index] == 0
+		int oy = o / BOXSIZE, ox = o % BOXSIZE;	// position in the box
+		int index = board.Index(bx,by,ox,oy);	// get index in the box
+		bool placeable = board[index] == 0		// if I can place the value
 			&& Solver::CanPlace(insert, board.dependencies[index]);
 		if(placeable) 
 		{
-			candidates[count] = index;
+			candidates[count] = index; // push the candidate
 			count++;
 		}
 	}
 	
-	InplaceShuffle(candidates, count);
-	
-	if(count == 0)
+	InplaceShuffle(candidates, count); // random inplace shuffle
+
+	if(count == 0) // can't place any values
 		return false;
 	
-	Mutation* m = &(muts[(insert-1)*size + b]);
+	Mutation* m = &(muts[(insert-1)*SIZE + b]); // next mutation
 	
-	for(int i = 0; i < count; i++) 
+	for(int i = 0; i < count; i++) // for each candidate position
 	{
-		board[candidates[i]] = insert;
-		m->index = candidates[i];
-		m->value = insert;
+		board[candidates[i]] = insert; // place value
+		m->index = candidates[i]; // save mutation
+		m->value = insert; 
 		
-		std::cout << move_to(board1y, 1);
-		board.printBoard();
+		//std::cout << move_to(BOARD1Y, BOARD1X); // print board
+		//board.printBoard();
 		
-		if(PlaceNext(insert + (b + 1)/size, (b + 1)%size, board, muts))
+		if(PlaceNext(insert + (b + 1)/SIZE, (b + 1)%SIZE, board, muts)) // recurse
 			return true;
 		
-		board[candidates[i]] = 0;
+		board[candidates[i]] = 0; // not successful, unset
 		m->index = -1;
 		m->value = 0;
 	}
@@ -91,13 +96,26 @@ void InplaceShuffle(T* a, size_t n)
 	}
 }
 
-void BinarySearchMinimum(Board& board, Mutation muts[boardSize],
-	int at, int remaining)
-{
+int BinarySearchMinimum(Board& board, Board& completeBoard,
+	const Mutation muts[BOARDSIZE], int at, int remaining)
+{	
 	board.Clear();
 	for(int i = 0; i < at; i++)
 	{
 		board.Apply(muts[i]);
+	}
+	
+	if(Solver::AltSolve(board, completeBoard))
+	{
+		if(remaining == 0)
+			return at + 1;
+		return BinarySearchMinimum(board, completeBoard, muts, at + remaining/2, remaining/2);
+	}
+	else
+	{
+		if(remaining == 0)
+			return at;
+		return BinarySearchMinimum(board, completeBoard, muts, at - remaining/2, remaining/2);
 	}
 }
 

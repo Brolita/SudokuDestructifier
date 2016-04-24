@@ -16,11 +16,11 @@ I'm literally too good TM
 #include <typeinfo>
 #include "Build Settings.h"
 
-bool Solver::CanPlace(char value, char* dependency[3][size-1]) 
+bool Solver::CanPlace(char value, char* dependency[3][SIZE-1]) 
 {	
 	for(int j = 0; j < 3; j++)
 	{
-		for(int k = 0; k < size - 1; k++)
+		for(int k = 0; k < SIZE - 1; k++)
 		{
 			if((*(dependency[j][k])) == value) {
 				return false;
@@ -74,6 +74,57 @@ bool Solver::Solve(Board& board)
 			else board[argminbranch] = 0; //roll back mutation & try different value
 		}
 	}
+	return 0; //empty cell with no possible value
+}
+
+bool Solver::AltSolve(Board& board, Board& completeBoard)
+{
+	int minbranch = NULLHI;
+	int argminbranch = -1;
+	bool vals[SIZE+1]; //to ensure CanPlace is called as infrequently as possible
+	bool minvals[SIZE+1];
+	for(int ci = 0; ci < BOARDSIZE; ++ci) //for each cell
+	{
+		if(board[ci] == 0) //for each empty cell
+		{
+			int nbranch = 0;
+			for(int vi = 1; vi < SIZE + 1; ++vi) //for each value
+			{
+				if(nbranch == minbranch) //already too far
+				{
+					break;
+				}
+				vals[vi] = CanPlace(vi, board.dependencies[ci]) and completeBoard[ci] != vi;
+				nbranch += vals[vi];
+			}
+			
+			if(nbranch == 0) //empty cell with no possible value
+			{
+				return 0;
+			}
+			if(nbranch < minbranch) //best cell so far
+			{
+				minbranch = nbranch;
+				argminbranch = ci;
+				for(int vi = 1; vi < SIZE + 1; ++vi) minvals[vi] = vals[vi];
+			}
+		}
+	}
+	if(argminbranch == -1 and board != completeBoard) return 1; //no unfilled cells remain
+	else if(argminbranch == -1) return 0;
+	
+	for(int vi = 1; vi < SIZE + 1; ++vi) //for each value
+	{
+		if(minvals[vi]) //for each allowed value
+		{
+			board[argminbranch] = vi;
+			if(Solve(board)) return 1; //recurse with mutation added
+			else board[argminbranch] = 0; //roll back mutation & try different value
+		}
+	}
+	//
+	board[argminbranch] = completeBoard[argminbranch];
+	if(Solve(board)) return 1; //recurse with mutation added
 	return 0; //empty cell with no possible value
 }
 

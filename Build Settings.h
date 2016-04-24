@@ -19,26 +19,18 @@
 //For advance output
 //	Can be OS locked if run on SOME old windows / non-standard linux
 
-#define boxSize 3
-#define size ( boxSize * boxSize )
-#define colSize ( boxSize * boxSize )
-#define rowSize ( boxSize * boxSize )
-#define boardSize ( size * size )
-#define outputSize ( size + boxSize + 1 )
-#define board1y 4
-#define board2y (board1y + outputSize + 2)
-#define board3y (board2y + outputSize + 2)
-
-//coreeeeeeeeeeey
-#define BOXSIZE boxSize
-#define SIZE size
-#define COLSIZE colSize
-#define ROWSIZE rowSize
-#define BOARDSIZE boardSize
-#define OUTPUTSIZE outputSize
-#define BOARD1Y board1y
-#define BOARD2Y board2y
-#define BOARD3Y board3y
+#define BOXSIZE 3
+#define SIZE ( BOXSIZE * BOXSIZE )
+#define COLSIZE ( BOXSIZE * BOXSIZE )
+#define ROWSIZE ( BOXSIZE * BOXSIZE )
+#define BOARDSIZE ( SIZE * SIZE )
+#define OUTPUTSIZEY ( SIZE + BOXSIZE + 1 )
+#define OUTPUTSIZEX ( 2*BOXSIZE + 2*SIZE + 2 )
+#define BOARD1Y 3
+#define BOARD2Y (BOARD1Y + OUTPUTSIZEY + 2)
+#define BOARD3Y (BOARD2Y + OUTPUTSIZEY + 2)
+#define BOARD1X 3
+#define BOARD2X (BOARD1X + OUTPUTSIZEX + 2)
 #define NULLHI BOARDSIZE + 1
 
 //For Dependancy

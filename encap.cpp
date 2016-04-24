@@ -140,7 +140,7 @@ int main()
 		RecieveFrom(MIN, buf, 128);
 		SendTo(FULL,(void*)buf, 4);
 		// we know its 4, but normally you'd have 
-		// to figure out its size 
+		// to figure out its SIZE 
 		RecieveFrom(FULL, buf, 128);
 		Send(buf, 5);
 		// CREATE is owned by MAIN

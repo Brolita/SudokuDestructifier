@@ -8,18 +8,20 @@ void onCtrlC(int i)
 
 int main(int argc, char* argv[])
 {
-	
 	using namespace std;
 	srand (time(NULL));
-	Board b = PuzzleGenerator::GenerateMinimum();
-	cout << clear_screen << move_to(BOARD1Y, 1);
-	b.printBoard();
-	//bool x = Solver::BruteSolve(b);
-	bool x = Solver::Solve(b);
-	cout << "final: solved? = " << x << endl;
-	b.printBoard();
-	return 0;
 	
+	clock_t start = clock(), diff;
+	
+	for(int i = 0; i < 100; i++) 
+		Board b = PuzzleGenerator::GenerateMinimum();
+	
+	diff = clock() - start;
+
+	int msec = diff * 1000 / CLOCKS_PER_SEC;
+	printf("Time taken %d seconds %d milliseconds", msec/1000, msec%1000);
+	
+	return 0;
 	
 	signal (SIGINT,onCtrlC);
 	
@@ -32,7 +34,7 @@ int main(int argc, char* argv[])
 	while(1)
 	{
 		Board b = PuzzleGenerator::GenerateMinimum();
-		std::cout << move_to(board2y, 1);
+		std::cout << move_to(BOARD2Y, 1);
 		b.printBoard();
 	}
 }

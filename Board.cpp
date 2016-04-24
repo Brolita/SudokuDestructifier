@@ -1,20 +1,36 @@
 #include "Build Settings.h"
 
+#define newline cursor_down(1) << cursor_left( OUTPUTSIZEX )
+
 Board::Board()
 { 
-	memset(data, 0, boardSize);
-	for(int i = 0; i < boardSize; i++)
+	memset(data, 0, BOARDSIZE);
+	for(int i = 0; i < BOARDSIZE; i++)
 		this->Dependency(i, dependencies[i]);
 }
 
 int Board::Index(int x, int y)
 {
-	return x + y * colSize;
+	return x + y * COLSIZE;
 }
 
 int Board::Index(int bx, int by, int ox, int oy)
 {
-	return ((bx * boxSize) + ox) + (((by * boxSize) + oy) * size);
+	return ((bx * BOXSIZE) + ox) + (((by * BOXSIZE) + oy) * SIZE);
+}
+
+bool operator==(Board& b1, Board& b2)
+{
+	for(int i = 0; i < BOARDSIZE; i++)
+	{
+		if(b1[i] != b2[i])
+			return 0;
+	}
+	return 1;
+}
+bool operator!=(Board& b1, Board& b2)
+{
+	return !(b1 == b2);
 }
 
 char& Board::Get(int index)
@@ -85,14 +101,14 @@ void Swap(T* a, T* b)
 	*b = n;
 }
  
-void Board::Dependency(int index, char* v[3][size - 1])
+void Board::Dependency(int index, char* v[3][SIZE - 1])
 {
-	int argBoxRow[boxSize];
-	int argBoxCol[boxSize];
-	int argRow[boxSize];
-	int argCol[boxSize];
+	int argBoxRow[BOXSIZE];
+	int argBoxCol[BOXSIZE];
+	int argRow[BOXSIZE];
+	int argCol[BOXSIZE];
 	
-	for(int i = 0; i < boxSize; i++)
+	for(int i = 0; i < BOXSIZE; i++)
 	{
 		argBoxCol[i] = i;
 		argBoxRow[i] = i;
@@ -100,20 +116,20 @@ void Board::Dependency(int index, char* v[3][size - 1])
 		argCol[i] = i;
 	}
 	
-	int x = index % size, y = index / size;
+	int x = index % SIZE, y = index / SIZE;
 	
-	int bx = x / boxSize, by = y / boxSize;
-	int ox = x % boxSize, oy = y % boxSize;
+	int bx = x / BOXSIZE, by = y / BOXSIZE;
+	int ox = x % BOXSIZE, oy = y % BOXSIZE;
 	
 	Swap(&argBoxRow[0], &argBoxRow[bx]);
 	Swap(&argBoxCol[0], &argBoxCol[by]);
 	Swap(&argRow[0], 	&argRow[ox]);
 	Swap(&argCol[0], 	&argCol[oy]);
 	
-	for(int i = 1; i < size; i++)
+	for(int i = 1; i < SIZE; i++)
 	{
-		int b = i % boxSize;
-		int a = i / boxSize;
+		int b = i % BOXSIZE;
+		int a = i / BOXSIZE;
 
 		v[ROW][i-1] = &Get(argBoxRow[a], argBoxCol[0], argRow[b], argCol[0]);
 		v[COL][i-1] = &Get(argBoxRow[0], argBoxCol[a], argRow[0], argCol[b]);
@@ -121,15 +137,15 @@ void Board::Dependency(int index, char* v[3][size - 1])
 	}
 }
 
-void Board::SolvedPositions(bool o[boardSize])
+void Board::SolvedPositions(bool o[BOARDSIZE])
 {
-	for(int i = 0; i < boardSize; i++)
+	for(int i = 0; i < BOARDSIZE; i++)
 		o[i] = data[i] != 0;
 }
 
 void Board::Clear()
 {
-	memset(data, 0, boardSize);
+	memset(data, 0, BOARDSIZE);
 }
 
 void Board::Apply(Mutation m)
@@ -140,36 +156,46 @@ void Board::Apply(Mutation m)
 bool Board::isValid()
 {
 	
-	for (int i=0; i<boxSize; i++){
-		for (int j=0; j<boxSize; j++){
+	for (int i=0; i<BOXSIZE; i++)
+	{
+		for (int j=0; j<BOXSIZE; j++)
+		{
 			//std::cout << i << " " << j << std::endl;
 			int val = this->Index(i,j,j,i);
-			char* depend[3][size-1];
+			char* depend[3][SIZE-1];
 			this->Dependency(val,depend);
-			for (int k=0; k<3; k++) {
-				bool check[size];
-				for (int l=0; l<size-1; l++){
-					if (*depend[k][l] == 0) {
+			for (int k=0; k<3; k++) 
+			{
+				bool check[SIZE];
+				for (int l=0; l<SIZE-1; l++)
+				{
+					if (*depend[k][l] == 0) 
+					{
 						//std::cout << "fails here" << std::endl;
 						return false;
 					}
 					//std::cout << char(*depend[k][l] + '0') << " at " << k << " " << l << std::endl;
-					if (!check[*depend[k][l]-1]){
+					if (!check[*depend[k][l]-1])
+					{
 						check[*depend[k][l]-1] = true;
 					}
-					else {
+					else 
+					{
 						//std::cout << "fails here1" << std::endl;
 						return false;
 					}
 				}
-				if (!check[this->Get(i,j,j,i)-1]) {
+				if (!check[this->Get(i,j,j,i)-1]) 
+				{
 					check[this->Get(i,j,j,i)-1] = true;
 				}
-				else {
+				else 
+				{
 					//std::cout << "fails here2" << std::endl;
 					return false;
 				}
-				for (int l=0; l<size; l++) {
+				for (int l=0; l<SIZE; l++) 
+				{
 					//std::cout << "fails here3" << std::endl;
 					if (!check[l]) return false;
 					check[l] = false;
@@ -179,27 +205,27 @@ bool Board::isValid()
 	}
 	
 	/*
-	for (int i=0; i<boardSize; i++) {
+	for (int i=0; i<BOARDSIZE; i++) {
 		//check box
-		for (int j=0; j<size; j++){
-			int val = (i/size/boxSize)*boxSize*size + ((i%size)/boxSize)*boxSize;
-			val = val + j%boxSize + (j/boxSize)*size;
+		for (int j=0; j<SIZE; j++){
+			int val = (i/SIZE/BOXSIZE)*BOXSIZE*SIZE + ((i%SIZE)/BOXSIZE)*BOXSIZE;
+			val = val + j%BOXSIZE + (j/BOXSIZE)*SIZE;
 			if (val == i) continue;
 			if (data[val] == data[i]) {
 				return false;
 			}
 		}
 		//check row
-		for (int j=0;j<rowSize;j++){
-			int val = i/size*size + j;
+		for (int j=0;j<COLSIZE;j++){
+			int val = i/SIZE*SIZE + j;
 			if (val == i) continue;
 			if (data[val] == data[i]) {
 				return false;
 			}
 		}
 		//check column
-		for (int j=0;j<colSize;j++){
-			int val = j*size + i%size;
+		for (int j=0;j<COLSIZE;j++){
+			int val = j*SIZE + i%SIZE;
 			if (val == i) continue;
 			if (data[val] == data[i]) {
 				return false;
@@ -212,19 +238,22 @@ bool Board::isValid()
 
 void Board::printBoard()
 {
-	int maxLen = (int) log10((double)size) + 1;
-	std::string horizontal = std::string(2*boxSize + size*(maxLen+1) + 1, '-');
+	std::string horizontal = std::string(2*BOXSIZE + 2*SIZE + 1, '-') + std::string(" ");
 	int count = 0;
-	for (int i=0; i<horizontal.length()-2*count; i++) {
-		if (i%(boxSize*(maxLen+1)) == 0) {
+	for (int i=0; i<horizontal.length()-2*count; i++) 
+	{
+		if (i%(BOXSIZE*2) == 0) 
+		{
 			horizontal[i+2*count] = '+';
 			count++;
 		}
 	}
-	std::cout << horizontal << std::endl;
-	for (int y = 0; y<size; y++){
+	std::cout << horizontal << newline;
+	for (int y = 0; y<SIZE; y++)
+	{
 		std::cout << "| ";
-		for (int x = 0; x<size; x++) {
+		for (int x = 0; x<SIZE; x++) 
+		{
 			char print = this->Get(x,y);
 			if(print == 0)
 				print = ' ';
@@ -232,15 +261,14 @@ void Board::printBoard()
 				print += '0';
 			else 
 				print += 'a' - 10;
-			std::cout << std::setw(maxLen)
-					  << print << " ";
-			if ((x+1)%boxSize == 0) {
-				std::cout << "| ";
-			}
+			std::cout << print << " ";
+			if ((x+1)%BOXSIZE == 0) 
+				std::cout << "| "; 	
 		}
-		std::cout << std::endl;
-		if ( (y+1)%boxSize == 0) {
-			std::cout << horizontal << std::endl;
+		std::cout << newline;
+		if ( (y+1)%BOXSIZE == 0) 
+		{
+			std::cout << horizontal << newline;
 		}
 	}
 	//std::cout << TopBottom << std::endl;

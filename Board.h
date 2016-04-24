@@ -30,13 +30,16 @@ class Board
 		
 		// extraction for Assignment Neural Net 
 		// also useful for solution algorithms
-		char* dependencies[boardSize][3][size-1];
+		char* dependencies[BOARDSIZE][3][SIZE-1];
 		
 		// extraction for Policy Neural Net
-		void SolvedPositions(bool o[boardSize]);
+		void SolvedPositions(bool o[BOARDSIZE]);
 	private:
-		char data[boardSize];
-		void Dependency(int index, char* v[3][size - 1]);
+		char data[BOARDSIZE];
+		void Dependency(int index, char* v[3][SIZE - 1]);
 };
+
+bool operator==(Board& b1, Board& b2);
+bool operator!=(Board& b1, Board& b2);
 
 #endif

@@ -100,8 +100,8 @@
    All this does is drive some basic functionality of a VT100/ANSI terminal.
    Notibly, it lacks:
     * The ability to tell you where the cursor is (so you must remember!)
-    * The ability to tell you the size of the terminal screen.
-      (You can use "stty size" at the command prompt to find out.)
+    * The ability to tell you the SIZE of the terminal screen.
+      (You can use "stty SIZE" at the command prompt to find out.)
     * The ability to get just one character from the keyboard.
       This takes some jumping through a few hoops. If you want to do some more
       advanced stuff than what is presented here, consider using the ncurses
