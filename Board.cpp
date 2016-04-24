@@ -28,6 +28,7 @@ bool operator==(Board& b1, Board& b2)
 	}
 	return 1;
 }
+
 bool operator!=(Board& b1, Board& b2)
 {
 	return !(b1 == b2);

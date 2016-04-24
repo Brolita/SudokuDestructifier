@@ -34,8 +34,9 @@ class Board
 		
 		// extraction for Policy Neural Net
 		void SolvedPositions(bool o[BOARDSIZE]);
-	private:
+		
 		char data[BOARDSIZE];
+	private:
 		void Dependency(int index, char* v[3][SIZE - 1]);
 };
 

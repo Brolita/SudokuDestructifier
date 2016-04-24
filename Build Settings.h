@@ -16,7 +16,7 @@
 #include <sys/types.h>
 
 #include "vt100.h"
-//For advance output
+//For advanced output
 //	Can be OS locked if run on SOME old windows / non-standard linux
 
 #define BOXSIZE 3
@@ -32,6 +32,10 @@
 #define BOARD1X 3
 #define BOARD2X (BOARD1X + OUTPUTSIZEX + 2)
 #define NULLHI BOARDSIZE + 1
+
+//For Generator
+#define GENERATORS 10
+#define TRAINERS 10
 
 //For Dependancy
 #define ROW 0

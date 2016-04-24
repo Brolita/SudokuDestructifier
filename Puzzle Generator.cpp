@@ -1,42 +1,42 @@
 #include "Build Settings.h"
 
-void GenerateFull(Board& board, Mutation muts[BOARDSIZE]);
 
 template<class T>
-void InplaceShuffle(T* a, size_t n);
-
-bool PlaceNext(int insert, int b, Board& board, Mutation muts[BOARDSIZE]);
-
-int BinarySearchMinimum(Board& board, Board& completeBoard,
-	const Mutation muts[BOARDSIZE], int at, int remaining);
-
-Board PuzzleGenerator::GenerateMinimum()
+void InplaceShuffle(T* a, size_t n)
 {
-	Board board;
-	Mutation muts[BOARDSIZE];
-	
-	GenerateFull(board, muts);
+	for(size_t i = 0; i < n; i++)
+	{
+		size_t j = i + rand() / (RAND_MAX / (n - i) + 1);
+		T t = a[j];
+		a[j] = a[i];
+		a[i] = t;
+	}
+}
+
+void PuzzleGenerator::GenerateMinimum(Board& board, Mutation muts[BOARDSIZE])
+{
+	board.Clear();
+
+	PuzzleGenerator::GenerateFull(board, muts);
 	
 	InplaceShuffle(muts, BOARDSIZE);
 	
 	Board completeBoard(board);
-	int solution = BinarySearchMinimum(board, completeBoard, muts, BOARDSIZE/2, BOARDSIZE/2);
+	int solution = PuzzleGenerator::BinarySearchMinimum(board, completeBoard, muts, BOARDSIZE/2, BOARDSIZE/2);
 	
 	board.Clear();
 	for(int i = 0; i < solution; i++)
 	{
 		board.Apply(muts[i]);
 	}
-	
-	return board;
 }
 	
-void GenerateFull(Board& board, Mutation muts[BOARDSIZE])
+void PuzzleGenerator::GenerateFull(Board& board, Mutation muts[BOARDSIZE])
 {	
 	PlaceNext(1, 0, board, muts);
 }
 
-bool PlaceNext(int insert, int b, Board& board, Mutation muts[BOARDSIZE])
+bool PuzzleGenerator::PlaceNext(int insert, int b, Board& board, Mutation muts[BOARDSIZE])
 {	
 	if(insert == SIZE+1) // end condition
 		return true;
@@ -84,19 +84,7 @@ bool PlaceNext(int insert, int b, Board& board, Mutation muts[BOARDSIZE])
 	return false;
 }
 
-template<class T>
-void InplaceShuffle(T* a, size_t n)
-{
-	for(size_t i = 0; i < n; i++)
-	{
-		size_t j = i + rand() / (RAND_MAX / (n - i) + 1);
-		T t = a[j];
-		a[j] = a[i];
-		a[i] = t;
-	}
-}
-
-int BinarySearchMinimum(Board& board, Board& completeBoard,
+int PuzzleGenerator::BinarySearchMinimum(Board& board, Board& completeBoard,
 	const Mutation muts[BOARDSIZE], int at, int remaining)
 {	
 	board.Clear();
