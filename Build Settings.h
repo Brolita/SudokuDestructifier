@@ -47,4 +47,6 @@
 #include "Destructifier.h"
 #include "Puzzle Generator.h"
 
+void SetBool(bool[SIZE] a, char v);
+
 #endif
