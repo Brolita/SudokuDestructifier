@@ -156,51 +156,51 @@ void Board::Apply(Mutation m)
 
 bool Board::isValid()
 {
-	
 	for (int i=0; i<BOXSIZE; i++)
 	{
 		for (int j=0; j<BOXSIZE; j++)
 		{
-			//std::cout << i << " " << j << std::endl;
 			int val = this->Index(i,j,j,i);
-			char* depend[3][SIZE-1];
-			this->Dependency(val,depend);
+			//std::cout << i << " " << j << " " << val << std::endl;
+			//char* depend[3][SIZE-1];
+			//this->Dependency(val,depend);
 			for (int k=0; k<3; k++) 
 			{
 				bool check[SIZE];
 				for (int l=0; l<SIZE-1; l++)
 				{
-					if (*depend[k][l] == 0) 
-					{
-						//std::cout << "fails here" << std::endl;
-						return false;
+					//std::cout << char(*dependencies[val][k][l] + '0') << " at " << k << " " << l << std::endl;
+					if (*dependencies[val][k][l] == 0) {
+						continue;
 					}
-					//std::cout << char(*depend[k][l] + '0') << " at " << k << " " << l << std::endl;
-					if (!check[*depend[k][l]-1])
+					else if (!check[*dependencies[val][k][l]-1])
 					{
-						check[*depend[k][l]-1] = true;
+						check[*dependencies[val][k][l]-1] = true;
 					}
-					else 
+					else
 					{
 						//std::cout << "fails here1" << std::endl;
 						return false;
 					}
 				}
-				if (!check[this->Get(i,j,j,i)-1]) 
+				if (!check[this->Get(val)-1]) 
 				{
-					check[this->Get(i,j,j,i)-1] = true;
+					check[this->Get(val)-1] = true;
 				}
 				else 
 				{
 					//std::cout << "fails here2" << std::endl;
 					return false;
 				}
-				for (int l=0; l<SIZE; l++) 
-				{
-					//std::cout << "fails here3" << std::endl;
-					if (!check[l]) return false;
+				for (int l=0; l<SIZE; l++) {
 					check[l] = false;
 				}
+				//for (int l=0; l<SIZE; l++) 
+				//{
+					//std::cout << "fails here3" << std::endl;
+					//if (!check[l]) return false;
+					//check[l] = false;
+				//}
 			}
 		}
 	}
