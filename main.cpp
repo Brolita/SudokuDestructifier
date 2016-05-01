@@ -5,6 +5,13 @@
 
 std::ofstream* ofs;
 
+void SetBool(bool[SIZE] a, char v) {
+	for(int i = 0; i < SIZE; i++)
+		a[i] = false;
+	if(v)
+		a[v-1] = true;
+}
+
 void onCtrlC(int i)
 {
 	ofs->close();
