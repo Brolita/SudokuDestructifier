@@ -18,6 +18,31 @@ void onCtrlC(int i)
 	exit(1);
 }
 
+void readFile(std::ifstream &file) {
+	Board b;
+	char a;
+	int i = 0;
+	int count = 0;
+	Mutation m;
+	while (file) {
+		file.get(a);
+		if (i == BOARDSIZE) {
+			count++;
+			if (count%10000 == 0)
+				b.printBoard();
+			i = 0;
+			b.Clear();
+		}
+		m.index = i;
+		m.value = a;
+		b.Apply(m);
+		i++;
+	}
+	//b.printBoard();
+	file.close();
+}
+
+
 int main(int argc, char* argv[])
 {
 	using namespace std;
@@ -27,17 +52,17 @@ int main(int argc, char* argv[])
 	
 	int c = 0;
 	
-	ofs = new ofstream("output2x2.bin", std::ofstream::out | std::ofstream::app);
-	
-	ofstream file;
-	file.open("output2x2.bin");
+	ofs = new ofstream("output3x3.bin", std::ofstream::out | std::ofstream::app);
 	
 	string progress = string("[") 
 		+ string(PROGRESSBAR_SIZE - 1, ' ') + string("]");
 	
 	Board b;
 	Mutation muts[BOARDSIZE];
-
+	//std::ifstream file;
+	//file.open("output3x3o1.bin",std::ios::binary);
+	//readFile(file);
+	/*
 	while(1)
 	{
 		for(int i = 0; i < PER_TICK * PROGRESSBAR_SIZE; i++)
@@ -64,7 +89,7 @@ int main(int argc, char* argv[])
 		}
 		c++; // ayy
 	}
-	
+	*/
 
 	return 0;
 }
