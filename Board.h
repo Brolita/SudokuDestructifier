@@ -25,6 +25,8 @@ class Board
 
 		Board& operator=(const Board& b);
 		
+		int Count();
+		
 		bool isValid();
 		void printBoard();
 		
