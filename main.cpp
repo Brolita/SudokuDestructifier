@@ -6,10 +6,10 @@
 std::ofstream* ofs;
 
 void SetBool(bool a[SIZE], char v) {
-	for(int i = 0; i < SIZE; i++)
-		a[i] = false;
-	if(v)
-		a[v-1] = true;
+    for(int i = 0; i < SIZE; i++)
+        a[i] = false;
+    if(v)
+        a[v-1] = true;
 }
 
 void onCtrlC(int i)
@@ -27,20 +27,13 @@ int main(int argc, char* argv[])
 	
 	int c = 0;
 	
-	ofs = new ofstream("output2x2.bin", std::ofstream::out | std::ofstream::app);
-	
-	ofstream file;
-	file.open("output2x2.bin");
+	ofs = new ofstream("output3x3.bin", std::ofstream::out | std::ofstream::app);
 	
 	string progress = string("[") 
 		+ string(PROGRESSBAR_SIZE - 1, ' ') + string("]");
 	
 	Board b;
 	Mutation muts[BOARDSIZE];
-
-	std::cout << "why\n";
-	Board b2 = b;
-
 	while(1)
 	{
 		for(int i = 0; i < PER_TICK * PROGRESSBAR_SIZE; i++)
@@ -67,7 +60,6 @@ int main(int argc, char* argv[])
 		}
 		c++; // ayy
 	}
-	
 
 	return 0;
 }

@@ -1,7 +1,4 @@
-#include "Board.h"	
-#include "Extractor.h"
-
-#include <iostream>
+#include "Build Settings.h"
 
 void Extractor::ExtractForAssignment(Mutation m, Board& b) {
 

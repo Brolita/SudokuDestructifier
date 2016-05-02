@@ -19,7 +19,7 @@
 //For advanced output
 //	Can be OS locked if run on SOME old windows / non-standard linux
 
-#define BOXSIZE 2
+#define BOXSIZE 3
 #define SIZE ( BOXSIZE * BOXSIZE )
 #define COLSIZE ( BOXSIZE * BOXSIZE )
 #define ROWSIZE ( BOXSIZE * BOXSIZE )
@@ -46,6 +46,7 @@
 #include "Solver.h"
 #include "Destructifier.h"
 #include "Puzzle Generator.h"
+#include "Extractor.h"
 
 void SetBool(bool a[SIZE], char v);
 

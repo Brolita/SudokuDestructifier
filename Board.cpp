@@ -84,25 +84,6 @@ int Board::Count() {
 	return c;
 }
 
-Board& Board::operator= (Board b) {
-	std::cout << "hi there\n";
-
-
-	for (int i = 0; i < BOARDSIZE; i++) {
-		for (int j = 0; j < 3; j++) {
-			for (int k = 0; k < SIZE-1; k++) {
-				dependencies[i][j][k] = b.dependencies[i][j][k];
-			}
-		}
-	}
-
-	for (int i = 0; i < BOARDSIZE; i++) {
-		data[i] = b.data[i];
-	}
-
-	return *this;
-}
-
 /* Dependency for an index
  *  	         
  * Example, dependencies for D

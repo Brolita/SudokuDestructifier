@@ -1,6 +1,4 @@
-#include "Board.h"
-
-#include <string>
+#include "Build Settings.h"
 
 class Extractor {
 public:
