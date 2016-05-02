@@ -45,6 +45,20 @@ void readFile(std::ifstream &file) {
 
 int main(int argc, char* argv[])
 {
+	NeuralNet n(2,3,1);
+	float output;
+	float input[] = {.2, .3};
+	n.FeedForward(input, &output);
+	std::cout<<output<<std::endl;
+	float desired = 1.0f;
+	for(int i = 0; i < 100; i++)
+	{
+		n.BackPropagate(&desired);
+		n.FeedForward(input, &output);
+		std::cout<<output<<std::endl;
+	}
+	return 0;
+	/*
 	using namespace std;
 	signal (SIGINT,onCtrlC);
 	
@@ -90,4 +104,5 @@ int main(int argc, char* argv[])
 	}
 
 	return 0;
+	*/
 }

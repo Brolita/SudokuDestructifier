@@ -43,11 +43,17 @@
 #define COL 1
 #define BOX 2
 
+//For Neural Net
+#define ETA 0.01
+#define EPS 0.1
+
 #include "Board.h"
 #include "Solver.h"
 #include "Destructifier.h"
 #include "Puzzle Generator.h"
 #include "Extractor.h"
+#include "Matrix.h"
+#include "Neural Net.h"
 
 void SetBool(bool a[SIZE], char v);
 
