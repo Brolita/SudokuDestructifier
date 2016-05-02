@@ -1,5 +1,44 @@
 #include "Build Settings.h"
 
+void Extractor::ExtractForPolicy(Mutation m, Board& b) {
+	char output[BOARDSIZE];
+	char outputM[BOARDSIZE];
+	
+	for (int i = 0; i < BOARDSIZE; i++) 
+	{
+		if (b.Get(i) == 0) 
+		{
+			output[i] = 0;
+		}
+		else 
+		{
+			output[i] = 1;
+		}
+		if (m.index == i)
+		{
+			outputM[i] = 1;
+		}
+		else 
+		{
+			outputM[i] = 0;
+		}
+	}
+	
+	std::cout << "[";
+	for (int i=0; i < BOARDSIZE; i++)
+	{
+		std::cout << " " << output[i] + '0';
+	}
+	std::cout << " ]\n";
+	std::cout << "[";
+	for (int i=0; i < BOARDSIZE; i++)
+	{
+		std::cout << " " << outputM[i] + '0';
+	} 
+	std::cout << " ]\n";
+}
+
+
 void Extractor::ExtractForAssignment(Mutation m, Board& b) {
 
 	int len = 3*(SIZE-1)*SIZE + SIZE;
