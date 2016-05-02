@@ -117,6 +117,18 @@ bool Solver::AltSolve(Board& board, Board& completeBoard)
 	//if(argminbranch == -1 and board != completeBoard) return 1; //no unfilled cells remain
 	//else if(argminbranch == -1) return 0;
 	if(argminbranch == -1) { //no unfilled cells remain
+		if(board != completeBoard) {
+			std::cout << clear_screen;
+			
+			std::cout << move_to(BOARD2Y, BOARD1X);
+			board.printBoard();
+			
+			std::cout << move_to(BOARD2Y, BOARD2X);
+			completeBoard.printBoard();
+			
+			exit(0);
+			
+		}
 		return board != completeBoard; //return whether alt solution was found
 	}
 	

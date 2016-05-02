@@ -1,6 +1,7 @@
 #include "Build Settings.h"
 
-#define newline cursor_down(1) << cursor_left( OUTPUTSIZEX )
+//#define newline cursor_down(1) << cursor_left( OUTPUTSIZEX )
+#define newline std::endl
 
 Board::Board()
 { 
@@ -9,8 +10,8 @@ Board::Board()
 		this->Dependency(i, dependencies[i]);
 }
 
-Board::Board(const Board& b) {
-	std::cout << "hello?\n";
+Board::Board(const Board& b) 
+{
 	*this = b;
 }
 
@@ -22,6 +23,22 @@ int Board::Index(int x, int y)
 int Board::Index(int bx, int by, int ox, int oy)
 {
 	return ((bx * BOXSIZE) + ox) + (((by * BOXSIZE) + oy) * SIZE);
+}
+
+Board& Board::operator= (const Board& b) {
+	for (int i = 0; i < BOARDSIZE; i++) {
+		for (int j = 0; j < 3; j++) {
+			for (int k = 0; k < SIZE-1; k++) {
+				dependencies[i][j][k] = b.dependencies[i][j][k];
+			}
+		}
+	}
+
+	for (int i = 0; i < BOARDSIZE; i++) {
+		data[i] = b.data[i];
+	}
+
+	return *this;
 }
 
 bool operator==(Board& b1, Board& b2)
@@ -57,25 +74,6 @@ char& Board::Get(int bx, int by, int ox, int oy)
 char& Board::operator[] (int index)
 {
 	return data[index];
-}
-
-Board& Board::operator= (Board b) {
-	std::cout << "hi there\n";
-
-
-	for (int i = 0; i < BOARDSIZE; i++) {
-		for (int j = 0; j < 3; j++) {
-			for (int k = 0; k < SIZE-1; k++) {
-				dependencies[i][j][k] = b.dependencies[i][j][k];
-			}
-		}
-	}
-
-	for (int i = 0; i < BOARDSIZE; i++) {
-		data[i] = b.data[i];
-	}
-
-	return *this;
 }
 
 /* Dependency for an index

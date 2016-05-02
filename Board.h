@@ -23,7 +23,7 @@ class Board
 		char& Get(int ox, int oy, int bx, int by);
 		char& operator[] (int index);
 
-		Board& operator=(Board b);
+		Board& operator=(const Board& b);
 		
 		bool isValid();
 		void printBoard();
