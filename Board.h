@@ -13,6 +13,7 @@ class Board
 {
 	public:
 		Board();
+		Board(const Board& b);
 		
 		int Index(int x, int y);
 		int Index(int ox, int oy, int bx, int by);
@@ -21,6 +22,10 @@ class Board
 		char& Get(int x, int y);
 		char& Get(int ox, int oy, int bx, int by);
 		char& operator[] (int index);
+
+		Board& operator=(const Board& b);
+		
+		int Count();
 		
 		bool isValid();
 		void printBoard();

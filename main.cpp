@@ -6,10 +6,10 @@
 std::ofstream* ofs;
 
 void SetBool(bool a[SIZE], char v) {
-	for(int i = 0; i < SIZE; i++)
-		a[i] = false;
-	if(v)
-		a[v-1] = true;
+    for(int i = 0; i < SIZE; i++)
+        a[i] = false;
+    if(v)
+        a[v-1] = true;
 }
 
 void onCtrlC(int i)
@@ -62,7 +62,6 @@ int main(int argc, char* argv[])
 	//std::ifstream file;
 	//file.open("output3x3o1.bin",std::ios::binary);
 	//readFile(file);
-	/*
 	while(1)
 	{
 		for(int i = 0; i < PER_TICK * PROGRESSBAR_SIZE; i++)
@@ -89,7 +88,6 @@ int main(int argc, char* argv[])
 		}
 		c++; // ayy
 	}
-	*/
 
 	return 0;
 }
