@@ -30,6 +30,7 @@ bool Solver::CanPlace(char value, char* dependency[3][SIZE-1])
 	return true;
 }
 
+//bool Solver::Solve(Board& board, Mutation sol[SIZE])
 bool Solver::Solve(Board& board)
 {
 	int minbranch = NULLHI;
@@ -77,6 +78,8 @@ bool Solver::Solve(Board& board)
 	return 0; //empty cell with no possible value
 }
 
+
+
 bool Solver::AltSolve(Board& board, Board& completeBoard)
 {
 	int minbranch = NULLHI;
@@ -94,24 +97,29 @@ bool Solver::AltSolve(Board& board, Board& completeBoard)
 				{
 					break;
 				}
+				//count values that can be placed but aren't in completeBoard:
 				vals[vi] = CanPlace(vi, board.dependencies[ci]) and completeBoard[ci] != vi;
 				nbranch += vals[vi];
 			}
 			
-			if(nbranch == 0) //empty cell with no possible value
-			{
-				return 0;
-			}
 			if(nbranch < minbranch) //best cell so far
 			{
 				minbranch = nbranch;
 				argminbranch = ci;
 				for(int vi = 1; vi < SIZE + 1; ++vi) minvals[vi] = vals[vi];
 			}
+			if(minbranch == 0) //found a guaranteed value; apply it
+			{
+				break;
+			}
 		}
 	}
-	if(argminbranch == -1 and board != completeBoard) return 1; //no unfilled cells remain
-	else if(argminbranch == -1) return 0;
+	//if(argminbranch == -1 and board != completeBoard) return 1; //no unfilled cells remain
+	//else if(argminbranch == -1) return 0;
+	if(argminbranch == -1) { //no unfilled cells remain
+		return board != completeBoard; //return whether alt solution was found
+	}
+	
 	
 	for(int vi = 1; vi < SIZE + 1; ++vi) //for each value
 	{
@@ -123,9 +131,10 @@ bool Solver::AltSolve(Board& board, Board& completeBoard)
 		}
 	}
 	//
-	board[argminbranch] = completeBoard[argminbranch];
-	if(Solve(board)) return 1; //recurse with mutation added
-	return 0; //empty cell with no possible value
+	board[argminbranch] = completeBoard[argminbranch]; //this mutation is guaranteed
+	//if(AltSolve(board, completeBoard)) return 1; //recurse with mutation added
+	//return 0; //empty cell with no possible value
+	return AltSolve(board, completeBoard); //recurse with guaranteed mutation added
 }
 
 bool Solver::BruteSolve(Board& board) { //DFS for testing Solve()
