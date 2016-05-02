@@ -1,7 +1,6 @@
 #include "Build Settings.h"
-
-//#define newline cursor_down(1) << cursor_left( OUTPUTSIZEX )
 #define newline std::endl
+
 
 Board::Board()
 { 
@@ -197,6 +196,9 @@ bool Board::isValid()
 			for (int k=0; k<3; k++) 
 			{
 				bool check[SIZE];
+				for (int l=0; l<SIZE; l++) {
+					check[l] = false;
+				}
 				for (int l=0; l<SIZE-1; l++)
 				{
 					//std::cout << char(*dependencies[val][k][l] + '0') << " at " << k << " " << l << std::endl;
@@ -205,26 +207,25 @@ bool Board::isValid()
 					}
 					else if (!check[*dependencies[val][k][l]-1])
 					{
-						check[*dependencies[val][k][l]-1] = true;
+						//std::cout << int(*dependencies[val][k][l]-1) << std::endl;
+						check[int(*dependencies[val][k][l]-1)] = true;
 					}
 					else
 					{
-						//std::cout << "fails here1" << std::endl;
+						std::cout << "fails here1" << std::endl;
 						return false;
 					}
 				}
-				if (!check[this->Get(val)-1]) 
-				{
-					check[this->Get(val)-1] = true;
+				if (int(this->Get(val)) != 0) {
+					if (check[(this->Get(val))-1]) {
+						//std::cout << "fails here2" << std::endl;
+						//std::cout << val << " hello :" << int(this->Get(val)-1) << " djkasjdk" << std::endl;
+						return false;
+					} 
 				}
-				else 
-				{
-					//std::cout << "fails here2" << std::endl;
-					return false;
-				}
-				for (int l=0; l<SIZE; l++) {
-					check[l] = false;
-				}
+				//for (int l=0; l<SIZE; l++) {
+				//	check[l] = false;
+				//}
 				//for (int l=0; l<SIZE; l++) 
 				//{
 					//std::cout << "fails here3" << std::endl;
