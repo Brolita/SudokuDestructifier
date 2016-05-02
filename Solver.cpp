@@ -151,7 +151,7 @@ bool Solver::AltSolve(Board& board, Board& completeBoard)
 					break;
 				}
 				//count values that can be placed but aren't in completeBoard:
-				vals[vi] = CanPlace(vi, board.dependencies[ci]) and completeBoard[ci] != vi;
+				vals[vi] = CanPlace(vi, board.dependencies[ci]) && completeBoard[ci] != vi;
 				nbranch += vals[vi];
 			}
 			
@@ -167,7 +167,7 @@ bool Solver::AltSolve(Board& board, Board& completeBoard)
 			}
 		}
 	}
-	//if(argminbranch == -1 and board != completeBoard) return 1; //no unfilled cells remain
+	//if(argminbranch == -1 && board != completeBoard) return 1; //no unfilled cells remain
 	//else if(argminbranch == -1) return 0;
 	if(argminbranch == -1) { //no unfilled cells remain
 		if(board != completeBoard) {
