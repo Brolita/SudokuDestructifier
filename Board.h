@@ -22,6 +22,8 @@ class Board
 		char& Get(int ox, int oy, int bx, int by);
 		char& operator[] (int index);
 		
+		int Count();
+		
 		bool isValid();
 		void printBoard();
 		

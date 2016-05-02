@@ -1,6 +1,7 @@
 #include "Build Settings.h"
 
-#define newline cursor_down(1) << cursor_left( OUTPUTSIZEX )
+//#define newline cursor_down(1) << cursor_left( OUTPUTSIZEX )
+#define newline std::endl
 
 Board::Board()
 { 
@@ -52,6 +53,14 @@ char& Board::Get(int bx, int by, int ox, int oy)
 char& Board::operator[] (int index)
 {
 	return data[index];
+}
+
+int Board::Count() {
+	int c = 0;
+	for(int i = 0; i < BOARDSIZE; ++i) {
+		c += (bool)data[i];
+	}
+	return c;
 }
 
 /* Dependency for an index

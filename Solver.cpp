@@ -30,8 +30,7 @@ bool Solver::CanPlace(char value, char* dependency[3][SIZE-1])
 	return true;
 }
 
-//bool Solver::Solve(Board& board, Mutation sol[SIZE])
-bool Solver::Solve(Board& board)
+bool Solver::Solve(Board& board) //for use by AltSolve
 {
 	int minbranch = NULLHI;
 	int argminbranch = -1;
@@ -78,6 +77,60 @@ bool Solver::Solve(Board& board)
 	return 0; //empty cell with no possible value
 }
 
+bool Solver::Solve(Board& board, Mutation sol[BOARDSIZE]) {
+	Solve(board, sol, 0);
+}
+
+bool Solver::Solve(Board& board, Mutation sol[BOARDSIZE], int solSize)
+{
+	int minbranch = NULLHI;
+	int argminbranch = -1;
+	bool vals[SIZE+1]; //to ensure CanPlace is called as infrequently as possible
+	bool minvals[SIZE+1];
+	for(int ci = 0; ci < BOARDSIZE; ++ci) //for each cell
+	{
+		if(board[ci] == 0) //for each empty cell
+		{
+			int nbranch = 0;
+			for(int vi = 1; vi < SIZE + 1; ++vi) //for each value
+			{
+				if(nbranch == minbranch) //already too far
+				{
+					break;
+				}
+				vals[vi] = CanPlace(vi, board.dependencies[ci]);
+				nbranch += vals[vi];
+			}
+			
+			if(nbranch == 0) //empty cell with no possible value
+			{
+				return 0;
+			}
+			if(nbranch < minbranch) //best cell so far
+			{
+				minbranch = nbranch;
+				argminbranch = ci;
+				for(int vi = 1; vi < SIZE + 1; ++vi) minvals[vi] = vals[vi];
+			}
+		}
+	}
+	if(argminbranch == -1) return 1; //no unfilled cells remain
+	
+	for(int vi = 1; vi < SIZE + 1; ++vi) //for each value
+	{
+		if(minvals[vi]) //for each allowed value
+		{
+			board[argminbranch] = vi;
+			if(Solve(board, sol, solSize + 1)) { //recurse with mutation added
+				sol[solSize].index = argminbranch; //record mutation
+				sol[solSize].value = vi;
+				return 1;
+			}
+			else board[argminbranch] = 0; //roll back mutation & try different value
+		}
+	}
+	return 0; //empty cell with no possible value
+}
 
 
 bool Solver::AltSolve(Board& board, Board& completeBoard)
