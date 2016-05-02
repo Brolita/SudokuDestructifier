@@ -1,3 +1,6 @@
+#include "Board.h"	
+#include "Extractor.h"
+
 #include <iostream>
 
 void Extractor::ExtractForAssignment(Mutation m, Board& b) {
@@ -9,7 +12,7 @@ void Extractor::ExtractForAssignment(Mutation m, Board& b) {
 	for (int j = 0; j < 3; j++) {
 		for (int k = 0; k < SIZE-1; k++) {
 			bool berOptions[SIZE];
-			SetBool(berOptions, *(b.depencies[m.value][j][k]));
+			SetBool(berOptions, *(b.dependencies[m.value][j][k]));
 			for (int i = 0; i < SIZE; i++) {
 				output[(j*(SIZE-1) + k)*SIZE + i] = berOptions[i] + '0';
 			}

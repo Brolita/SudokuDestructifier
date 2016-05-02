@@ -10,7 +10,8 @@ Board::Board()
 }
 
 Board::Board(const Board& b) {
-	this = b;
+	std::cout << "hello?\n";
+	*this = b;
 }
 
 int Board::Index(int x, int y)
@@ -59,6 +60,9 @@ char& Board::operator[] (int index)
 }
 
 Board& Board::operator= (Board b) {
+	std::cout << "hi there\n";
+
+
 	for (int i = 0; i < BOARDSIZE; i++) {
 		for (int j = 0; j < 3; j++) {
 			for (int k = 0; k < SIZE-1; k++) {
@@ -71,7 +75,7 @@ Board& Board::operator= (Board b) {
 		data[i] = b.data[i];
 	}
 
-	return this;
+	return *this;
 }
 
 /* Dependency for an index
