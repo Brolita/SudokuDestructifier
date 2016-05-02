@@ -38,6 +38,9 @@ int main(int argc, char* argv[])
 	Board b;
 	Mutation muts[BOARDSIZE];
 
+	std::cout << "why\n";
+	Board b2 = b;
+
 	while(1)
 	{
 		for(int i = 0; i < PER_TICK * PROGRESSBAR_SIZE; i++)
