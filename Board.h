@@ -37,9 +37,6 @@ class Board
 		// also useful for solution algorithms
 		char* dependencies[BOARDSIZE][3][SIZE-1];
 		
-		// extraction for Policy Neural Net
-		void SolvedPositions(bool o[BOARDSIZE]);
-		
 		char data[BOARDSIZE];
 	private:
 		void Dependency(int index, char* v[3][SIZE - 1]);

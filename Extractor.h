@@ -3,5 +3,5 @@
 class Extractor {
 public:
 	void ExtractForPolicy();
-	void ExtractForAssignment(Mutation m, Board& b);
+	void ExtractForAssignment(Mutation m, Board& b, std::ofstream* ofs);
 };

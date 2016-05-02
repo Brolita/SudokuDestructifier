@@ -167,12 +167,6 @@ void Board::Dependency(int index, char* v[3][SIZE - 1])
 	}
 }
 
-void Board::SolvedPositions(bool o[BOARDSIZE])
-{
-	for(int i = 0; i < BOARDSIZE; i++)
-		o[i] = data[i] != 0;
-}
-
 void Board::Clear()
 {
 	memset(data, 0, BOARDSIZE);

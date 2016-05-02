@@ -32,7 +32,8 @@
 #define BOARD1X 3
 #define BOARD2X (BOARD1X + OUTPUTSIZEX + 2)
 #define NULLHI BOARDSIZE + 1
-
+#define ASSIGNMENT_NN_LENGTH 3*(SIZE-1)*SIZE + SIZE
+ 
 //For Generator
 #define GENERATORS 10
 #define TRAINERS 10
