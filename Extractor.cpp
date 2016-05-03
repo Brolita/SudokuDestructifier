@@ -8,30 +8,29 @@ void Extractor::ExtractForPolicy(Mutation m, Board& b, std::ofstream* ofs) {
 	for (int i = 0; i < BOARDSIZE; i++) 
 	{
 		if (b.Get(i) == 0) 
-			output[i] = 0;
+			output[i] = '0';
 		else 
-			output[i] = 1;
+			output[i] = '1';
 		
 		if (m.index == i)
-			outputM[i] = 1;
+			outputM[i] = '1';
 		else 
-			outputM[i] = 0;
+			outputM[i] = '0';
 	}
 	
 	ofs->write(output, BOARDSIZE);
 	ofs->write(outputM, BOARDSIZE);
 	
-	/*
-	std::cout << "[";
+	/*std::cout << "[";
 	for (int i=0; i < BOARDSIZE; i++)
 	{
-		std::cout << " " << output[i] + '0';
+		std::cout << " " << output[i];
 	}
 	std::cout << " ]\n";
 	std::cout << "[";
 	for (int i=0; i < BOARDSIZE; i++)
 	{
-		std::cout << " " << outputM[i] + '0';
+		std::cout << " " << outputM[i];
 	} 
 	std::cout << " ]\n";*/
 }
@@ -57,7 +56,7 @@ void Extractor::ExtractForAssignment(Mutation m, Board& b, std::ofstream* ofs)
 	
 	/*
 	std::cout << "[";
-	for (int i = 0; i < len; i++) {
+	for (int i = 0; i < ASSIGNMENT_NN_LENGTH; i++) {
 		std::cout << " " << output[i];
 	}
 	std::cout << " ]\n";*/

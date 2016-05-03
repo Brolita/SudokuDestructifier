@@ -16,9 +16,7 @@ void InplaceShuffle(T* a, size_t n)
 void PuzzleGenerator::GenerateMinimum(Board& board, Mutation muts[BOARDSIZE])
 {
 	board.Clear();
-
 	PuzzleGenerator::GenerateFull(board, muts);
-	
 	InplaceShuffle(muts, BOARDSIZE);
 	
 	Board completeBoard(board);
@@ -70,7 +68,7 @@ bool PuzzleGenerator::PlaceNext(int insert, int b, Board& board, Mutation muts[B
 		m->index = candidates[i]; // save mutation
 		m->value = insert; 
 		
-		//std::cout << move_to(BOARD1Y, BOARD1X); // print board
+		//std::std::cout << move_to(BOARD1Y, BOARD1X); // print board
 		//board.printBoard();
 		
 		if(PlaceNext(insert + (b + 1)/SIZE, (b + 1)%SIZE, board, muts)) // recurse
@@ -92,7 +90,6 @@ int PuzzleGenerator::BinarySearchMinimum(Board& board, Board& completeBoard,
 	{
 		board.Apply(muts[i]);
 	}
-	
 	if(Solver::AltSolve(board, completeBoard))
 	{
 		if(remaining == 0)

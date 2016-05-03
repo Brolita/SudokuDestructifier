@@ -3,7 +3,8 @@
 #define PROGRESSBAR_SIZE 100
 #define PER_TICK 10
 
-std::ofstream* ofs;
+std::ofstream* ofsPolicy;
+std::ofstream* ofsAssignment;
 
 void SetBool(bool a[SIZE], char v) {
     for(int i = 0; i < SIZE; i++)
@@ -14,74 +15,84 @@ void SetBool(bool a[SIZE], char v) {
 
 void onCtrlC(int i)
 {
-	ofs->close();
+	ofsPolicy->close();
+	ofsAssignment->close();
 	exit(1);
 }
 
-void readFile(std::ifstream &file) {
-	Board b;
+void ReadBoard(std::ifstream &file, Board& b) {
 	char a;
 	int i = 0;
-	int count = 0;
-	Mutation m;
 	while (file) {
 		file.get(a);
-		if (i == BOARDSIZE) {
-			count++;
-			if (count%10000 == 0)
-				b.printBoard();
-			i = 0;
-			b.Clear();
-		}
-		m.index = i;
-		m.value = a;
-		b.Apply(m);
+		if (i == BOARDSIZE)
+			return;
+		b[i] = a;
 		i++;
 	}
-	//b.printBoard();
-	file.close();
 }
 
 
 int main(int argc, char* argv[])
 {
-	NeuralNet n(2,3,1);
-	float output;
-	float input[] = {.2, .3};
-	n.FeedForward(input, &output);
-	std::cout<<output<<std::endl;
-	float desired = 1.0f;
-	for(int i = 0; i < 100; i++)
-	{
-		n.BackPropagate(&desired);
-		n.FeedForward(input, &output);
-		std::cout<<output<<std::endl;
-	}
-	return 0;
 	/*
+	NeuralNet n(2,3,2);
+	float output[] = {0.3f, 0.f};
+	float input[] = {.2, .3};
+	n.FeedForward(input, output);
+	float desired[] = {0.5f, .1f};
+	for(int i = 0; i < 5; i++)
+	{
+		n.BackPropagate(desired);
+		n.FeedForward(input, output);
+	}
+	
+	n.Save(std::cout);
+	*/
+	/*
+	std::ifstream nSer("output.txt");
+	NeuralNet n(nSer);
+	n.Save(std::cout);
+	*/
+	
 	using namespace std;
 	signal (SIGINT,onCtrlC);
 	
 	srand (time(NULL));
 	
-	int c = 0;
+	int iteration = 0;
 	
-	ofs = new ofstream("output3x3.bin", std::ofstream::out | std::ofstream::app);
+	ofsPolicy = new ofstream(argv[1], std::ofstream::out | std::ofstream::app);
+	ofsAssignment = new ofstream(argv[2], std::ofstream::out | std::ofstream::app);
 	
 	string progress = string("[") 
 		+ string(PROGRESSBAR_SIZE - 1, ' ') + string("]");
 	
 	Board b;
 	Mutation muts[BOARDSIZE];
-	//std::ifstream file;
-	//file.open("output3x3o1.bin",std::ios::binary);
-	//readFile(file);
 	while(1)
 	{
 		for(int i = 0; i < PER_TICK * PROGRESSBAR_SIZE; i++)
 		{
 			PuzzleGenerator::GenerateMinimum(b, muts);
-			ofs->write(b.data, BOARDSIZE);
+			int c = 0;
+			for(int j = 0; j < BOARDSIZE; j++)
+			{
+				if(b[j]) c++;
+			}
+			Solver::Solve(b, muts);
+			for(int j = 0; j < c; j++)
+			{
+				// undo solution
+				b[muts[j].index] = 0;
+			}
+			for(int j = 0; j < c; j++)
+			{
+				Extractor::ExtractForPolicy(muts[i], b, ofsPolicy);
+				Extractor::ExtractForAssignment(muts[i], b, ofsAssignment);
+				b.Apply(muts[j]);
+			}
+			
 			if(i % PER_TICK == 0)
 			{
 				if(i == 0)
@@ -97,12 +108,12 @@ int main(int argc, char* argv[])
 			}
 			cout << cursor_left(PROGRESSBAR_SIZE + 2)
 				 << cursor_up(1)
-				 << "Iteration " << c+1 << ": " << i
+				 << "Iteration " << iteration+1 << ": puzzle " 
+				 << i << " size " << c
 				 << "     \n" << progress << flush;
 		}
-		c++; // ayy
+		iteration++; // ayy
 	}
 
 	return 0;
-	*/
 }
