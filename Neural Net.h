@@ -7,8 +7,7 @@ class NeuralNet
 		NeuralNet(std::ifstream& input);
 		~NeuralNet();
 		
-		std::string Serialize();
-		void Save(std::ofstream output);
+		void Save(std::ostream& output);
 		
 		void FeedForward(float* input, float* output);
 		void BackPropagate(float* desired);
@@ -26,5 +25,5 @@ class NeuralNet
 		int hiddenLayerSize;
 		int outputLayerSize;
 		float Sig(float a);
-		float SigPrimeAssisted(float y, float x);
+		float SigPrimeAssisted(float y);
 };

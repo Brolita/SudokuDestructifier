@@ -44,7 +44,7 @@
 #define BOX 2
 
 //For Neural Net
-#define ETA 0.01
+#define ETA 10
 #define EPS 0.1
 
 #include "Board.h"
