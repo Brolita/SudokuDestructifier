@@ -10,7 +10,7 @@ class Solver
 		static bool BruteSolve(Board& board);
 		static bool AltSolve(Board& board, Board& completeBoard);
 		static int SolutionCount(Board& board);
-		static bool CanPlace(char value, char* dependency[3][SIZE-1]);
+		static bool CanPlace(char value, Board& b, int index);
 	
 	private:
 		static bool Solve(Board& board);

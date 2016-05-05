@@ -1,12 +1,13 @@
 #include "Build Settings.h"
 #define newline std::endl
-
+//#define newline cursor_down(1) << cursor_left( OUTPUTSIZEX )
 
 Board::Board()
 { 
 	memset(data, 0, BOARDSIZE);
+	
 	for(int i = 0; i < BOARDSIZE; i++)
-		this->Dependency(i, dependencies[i]);
+		this->Dependency(i);
 }
 
 Board::Board(const Board& b) 
@@ -131,7 +132,7 @@ void Swap(T* a, T* b)
 	*b = n;
 }
  
-void Board::Dependency(int index, char* v[3][SIZE - 1])
+void Board::Dependency(int index)
 {
 	int argBoxRow[BOXSIZE];
 	int argBoxCol[BOXSIZE];
@@ -161,10 +162,17 @@ void Board::Dependency(int index, char* v[3][SIZE - 1])
 		int b = i % BOXSIZE;
 		int a = i / BOXSIZE;
 
-		v[ROW][i-1] = &Get(argBoxRow[a], argBoxCol[0], argRow[b], argCol[0]);
-		v[COL][i-1] = &Get(argBoxRow[0], argBoxCol[a], argRow[0], argCol[b]);
-		v[BOX][i-1] = &Get(argBoxRow[0], argBoxCol[0], argRow[a], argCol[b]);
+		dependencies[index][ROW][i-1] = &data[Index(argBoxRow[a], argBoxCol[0], argRow[b], argCol[0])];
+		dependencies[index][COL][i-1] = &data[Index(argBoxRow[0], argBoxCol[a], argRow[0], argCol[b])];
+		dependencies[index][BOX][i-1] = &data[Index(argBoxRow[0], argBoxCol[0], argRow[a], argCol[b])];
 	}
+}
+
+// literally what i've never seen a actual need for a getter
+// before this day what has happened to me
+char Board::GetDependency(int i, int j, int k)
+{
+	return *(dependencies[i][j][k]);
 }
 
 void Board::Clear()
@@ -175,6 +183,11 @@ void Board::Clear()
 void Board::Apply(Mutation m)
 {
 	data[m.index] = m.value;
+}
+
+void Board::UnApply(Mutation m)
+{
+	data[m.index] = 0;
 }
 
 bool Board::isValid()
