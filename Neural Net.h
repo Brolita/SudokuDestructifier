@@ -1,5 +1,8 @@
 #include "Build Settings.h"
 
+#ifndef NEURALNET
+#define NEURALNET
+
 class NeuralNet 
 {
 	public:
@@ -27,3 +30,5 @@ class NeuralNet
 		float Sig(float a);
 		float SigPrimeAssisted(float y);
 };
+
+#endif
