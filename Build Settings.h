@@ -33,6 +33,10 @@
 #define BOARD2X (BOARD1X + OUTPUTSIZEX + 2)
 #define NULLHI BOARDSIZE + 1
 #define ASSIGNMENT_NN_LENGTH 3*(SIZE-1)*SIZE + SIZE
+#define PRUNE_POLICY 0.99
+#define PRUNE_ASSIGN 0.99
+#define VALIDATE_ASSIGN 0.5
+#define DEPENDENCYSIZE 3 * (SIZE-1) * SIZE
  
 //For Generator
 #define GENERATORS 10
@@ -49,11 +53,13 @@
 
 #include "Board.h"
 #include "Solver.h"
-#include "Destructifier.h"
 #include "Puzzle Generator.h"
 #include "Extractor.h"
 #include "Matrix.h"
 #include "Neural Net.h"
+#include "Dummy ANet.h"
+#include "Dummy PNet.h"
+#include "Destructifier.h"
 
 void SetBool(bool a[SIZE], char v);
 

@@ -13,7 +13,6 @@
 I'm literally too good TM
 */
 
-#include <typeinfo>
 #include "Build Settings.h"
 
 bool Solver::CanPlace(char value, Board& b, int index) 

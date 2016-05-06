@@ -35,6 +35,34 @@ void ReadBoard(std::ifstream &file, Board& b) {
 
 int main(int argc, char* argv[])
 {
+	using namespace std;
+	Board b;
+	Mutation m[BOARDSIZE];
+	PuzzleGenerator::GenerateMinimum(b, m);
+
+	/*
+	PuzzleGenerator::GenerateFull(b, m);
+	for(int i = 0; i < 10; ++i) {
+		b[rand() % BOARDSIZE] = 0;
+	}
+	*/
+	
+	DummyPNet* p = new DummyPNet(1);
+	DummyANet* a = new DummyANet(1);
+	
+	cout << BOARDSIZE - b.Count() << endl;
+	b.printBoard();
+	Destructifier d(p, a);
+	bool s = d.Destructify(b, BOARDSIZE - b.Count());
+	//Solver::BruteSolve(b);
+	
+	cout << s << endl;
+	
+	b.printBoard();
+	
+	return 0;
+	
+	
 	/*
 	NeuralNet n(2,3,2);
 	float output[] = {0.3f, 0.f};
@@ -55,6 +83,7 @@ int main(int argc, char* argv[])
 	n.Save(std::cout);
 	*/
 	
+	/*
 	using namespace std;
 	signal (SIGINT,onCtrlC);
 	
@@ -116,4 +145,5 @@ int main(int argc, char* argv[])
 	}
 
 	return 0;
+	*/
 }
