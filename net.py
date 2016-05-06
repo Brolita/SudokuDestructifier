@@ -11,7 +11,8 @@ eta = None
 epochs = None
 inputlayer = 81
 outputlayer = 81
-files = ["PolicyData4.txt", "PolicyData3.txt"]
+skipCount = 100
+files = ["PolicyData1.txt", "PolicyData2.txt"]
 
 try:
 	hiddenlayer = int(sys.argv[1])
@@ -28,17 +29,22 @@ def data_from_files(files, inputlayer, outputlayer):
 		with open(file, "rb") as f:
 			input = []
 			output = []
+			skip = 0
 			while True:
 				chunk = f.read(1)
-				if chunk:
-					if len(input) < inputlayer:
-						input.append(int(chunk))
-					elif len(output) < outputlayer:
-						output.append(int(chunk))
-					else:
-						yield input, output
-						input = []
-						output = []
+				if skip == 0:
+					if chunk:
+						if len(input) < inputlayer:
+							input.append(int(chunk))
+						elif len(output) < outputlayer:
+							output.append(int(chunk))
+						else:
+							yield input, output
+							skip = skipCount * (inputlayer +outputlayer)
+							input = []
+							output = []
+				elif chunk:
+					skip += -1
 				else:
 					break
 
@@ -63,7 +69,7 @@ class NeuralNet:
 		result = C.tolist()
 		return result, A, B, C
 	
-	def backPropagate(self, A, B, C, yhat):
+	def backPropagate(self, A, B, C, yhat, eta):
 		dEdC = yhat - C
 		
 		dNet2 = dEdC * C * (1 - C)
@@ -77,37 +83,44 @@ class NeuralNet:
 		self.W1 = np.add(self.W1, dW1)
 		self.W2 = np.add(self.W2, dW2)
 		
-	def processData(self, datum, desired):
+	def processData(self, datum, desired, eta):
+		c = 0
 		while True:
 			result, A, B, C = self.feedForward(datum)
 			E = np.linalg.norm(np.subtract(desired, result)) / 2
-			#print >> sys.stderr,  "\t", E
+			c += 1
+			if c % 1000 == 0:
+				print >> sys.stderr, "\t", c, E
+			if c > 10000:
+				break
 			if math.isnan(E):
 				sys.exit(1)
 			if E < eps:
 				break
 			else:
-				self.backPropagate(A, B, C, desired)
+				self.backPropagate(A, B, C, desired, eta)
 			
 		
 net = NeuralNet(inputlayer, hiddenlayer, outputlayer)
 
 print >> sys.stderr, "Training..."
-for i in range(epochs):
-	print >> sys.stderr, "Run", i + 1, "..."
-	j = 0
-	for (input, output) in data_from_files(files, inputlayer, outputlayer):
-		j += 1
-		print >> sys.stderr, j, "done"
-		if j == 900:
-			break
-		net.processData(input, output)
-	print j
+try:
+	for i in range(epochs):
+		print >> sys.stderr, "Run", i + 1, "..."
+		j = 0
+		for (input, output) in data_from_files(files, inputlayer, outputlayer):
+			j += 1
+			if j%100 == 0:
+				print >> sys.stderr, j, "done"
+			if j == 50000:
+				break
+			net.processData(input, output, eta)
+		print j
+except KeyboardInterrupt:
+	pass
 
 print "NN", inputlayer, hiddenlayer, outputlayer	
 
-print "W1:"
 print net.W1
 
-print "W2:"
 print net.W2
