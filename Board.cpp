@@ -115,7 +115,7 @@ int Board::Count() {
  * G H I						
  * P
  * Q
- * R		will return [B, C, J, K, K, L, M, N, O], [D, G, P, Q, R, S, T, U], [B, C, D, E, F, G, H, I]
+ * R		will return [B, C, J, K, L, M, N, O], [D, G, P, Q, R, S, T, U], [B, C, D, E, F, G, H, I]
  * S
  * T
  * U
@@ -242,36 +242,6 @@ bool Board::isValid()
 			}
 		}
 	}
-	
-	/*
-	for (int i=0; i<BOARDSIZE; i++) {
-		//check box
-		for (int j=0; j<SIZE; j++){
-			int val = (i/SIZE/BOXSIZE)*BOXSIZE*SIZE + ((i%SIZE)/BOXSIZE)*BOXSIZE;
-			val = val + j%BOXSIZE + (j/BOXSIZE)*SIZE;
-			if (val == i) continue;
-			if (data[val] == data[i]) {
-				return false;
-			}
-		}
-		//check row
-		for (int j=0;j<COLSIZE;j++){
-			int val = i/SIZE*SIZE + j;
-			if (val == i) continue;
-			if (data[val] == data[i]) {
-				return false;
-			}
-		}
-		//check column
-		for (int j=0;j<COLSIZE;j++){
-			int val = j*SIZE + i%SIZE;
-			if (val == i) continue;
-			if (data[val] == data[i]) {
-				return false;
-			}
-		}
-	}
-	*/
 	return true;
 }
 
