@@ -13,16 +13,15 @@
 I'm literally too good TM
 */
 
-#include <typeinfo>
 #include "Build Settings.h"
 
-bool Solver::CanPlace(char value, char* dependency[3][SIZE-1]) 
+bool Solver::CanPlace(char value, Board& b, int index) 
 {	
 	for(int j = 0; j < 3; j++)
 	{
 		for(int k = 0; k < SIZE - 1; k++)
 		{
-			if((*(dependency[j][k])) == value) {
+			if(b.GetDependency(index, j, k) == value) {
 				return false;
 			}
 		}
@@ -47,7 +46,7 @@ bool Solver::Solve(Board& board) //for use by AltSolve
 				{
 					break;
 				}
-				vals[vi] = CanPlace(vi, board.dependencies[ci]);
+				vals[vi] = CanPlace(vi, board, ci);
 				nbranch += vals[vi];
 			}
 			
@@ -98,7 +97,7 @@ bool Solver::Solve(Board& board, Mutation sol[BOARDSIZE], int solSize)
 				{
 					break;
 				}
-				vals[vi] = CanPlace(vi, board.dependencies[ci]);
+				vals[vi] = CanPlace(vi, board, ci);
 				nbranch += vals[vi];
 			}
 			
@@ -151,7 +150,7 @@ bool Solver::AltSolve(Board& board, Board& completeBoard)
 					break;
 				}
 				//count values that can be placed but aren't in completeBoard:
-				vals[vi] = CanPlace(vi, board.dependencies[ci]) && completeBoard[ci] != vi;
+				vals[vi] = CanPlace(vi, board, ci) and completeBoard[ci] != vi;
 				nbranch += vals[vi];
 			}
 			
@@ -167,7 +166,7 @@ bool Solver::AltSolve(Board& board, Board& completeBoard)
 			}
 		}
 	}
-	//if(argminbranch == -1 && board != completeBoard) return 1; //no unfilled cells remain
+	//if(argminbranch == -1 and board != completeBoard) return 1; //no unfilled cells remain
 	//else if(argminbranch == -1) return 0;
 	if(argminbranch == -1) { //no unfilled cells remain
 		if(board != completeBoard) {
@@ -209,7 +208,7 @@ bool Solver::BruteSolve(Board& board) { //DFS for testing Solve()
 		if(board[ci] == 0) {
 			solved = 0;
 			for(int vi = 1; vi < SIZE + 1; ++vi) {
-				if(Solver::CanPlace(vi, board.dependencies[ci])) {
+				if(Solver::CanPlace(vi, board, ci)) {
 					board[ci] = vi;
 					if(BruteSolve(board)) return 1;
 					else board[ci] = 0;

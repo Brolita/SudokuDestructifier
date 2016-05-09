@@ -1,0 +1,54 @@
+Presentation notes:
+	
+Structure overview
+
+Darren/Garrett
+	Board
+		Board
+		Mutations (mostly why we used them)
+	
+Algorithm overview
+
+Ben
+	Solver
+		BruteSolver
+		Solver
+		AltSolver
+
+Corey 
+	Generator
+		Full
+		Minimizer
+	
+		
+Neural Net overview
+
+Darren/Garrett
+	Orginal net code
+		Standard 3 layer model 
+		I'll go over what should be said
+	
+	Extractor
+		Policy / Assignment
+		
+Paralell trainer
+
+Corey
+	Encapsulator
+		Board queue
+		Message system
+		Generator / Trainer
+		
+Destructifer overview
+
+Ben
+	TBD
+	
+Results
+	
+TBD
+	TBD
+	
+		
+
+	

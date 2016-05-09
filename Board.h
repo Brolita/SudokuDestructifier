@@ -32,17 +32,16 @@ class Board
 		
 		void Clear();
 		void Apply(Mutation m);
+		void UnApply(Mutation m);
 		
 		// extraction for Assignment Neural Net 
 		// also useful for solution algorithms
+		char GetDependency(int i, int j, int k);
 		char* dependencies[BOARDSIZE][3][SIZE-1];
-		
-		// extraction for Policy Neural Net
-		void SolvedPositions(bool o[BOARDSIZE]);
 		
 		char data[BOARDSIZE];
 	private:
-		void Dependency(int index, char* v[3][SIZE - 1]);
+		void Dependency(int index);
 };
 
 bool operator==(Board& b1, Board& b2);

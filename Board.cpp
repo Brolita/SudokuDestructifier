@@ -1,13 +1,13 @@
 #include "Build Settings.h"
-
-//#define newline cursor_down(1) << cursor_left( OUTPUTSIZEX )
-#define newline std::endl
+//#define newline std::endl
+#define newline cursor_down(1) << cursor_left( OUTPUTSIZEX )
 
 Board::Board()
 { 
 	memset(data, 0, BOARDSIZE);
+	
 	for(int i = 0; i < BOARDSIZE; i++)
-		this->Dependency(i, dependencies[i]);
+		this->Dependency(i);
 }
 
 Board::Board(const Board& b) 
@@ -115,7 +115,7 @@ int Board::Count() {
  * G H I						
  * P
  * Q
- * R		will return [B, C, J, K, K, L, M, N, O], [D, G, P, Q, R, S, T, U], [B, C, D, E, F, G, H, I]
+ * R		will return [B, C, J, K, L, M, N, O], [D, G, P, Q, R, S, T, U], [B, C, D, E, F, G, H, I]
  * S
  * T
  * U
@@ -132,7 +132,7 @@ void Swap(T* a, T* b)
 	*b = n;
 }
  
-void Board::Dependency(int index, char* v[3][SIZE - 1])
+void Board::Dependency(int index)
 {
 	int argBoxRow[BOXSIZE];
 	int argBoxCol[BOXSIZE];
@@ -162,16 +162,17 @@ void Board::Dependency(int index, char* v[3][SIZE - 1])
 		int b = i % BOXSIZE;
 		int a = i / BOXSIZE;
 
-		v[ROW][i-1] = &Get(argBoxRow[a], argBoxCol[0], argRow[b], argCol[0]);
-		v[COL][i-1] = &Get(argBoxRow[0], argBoxCol[a], argRow[0], argCol[b]);
-		v[BOX][i-1] = &Get(argBoxRow[0], argBoxCol[0], argRow[a], argCol[b]);
+		dependencies[index][ROW][i-1] = &data[Index(argBoxRow[a], argBoxCol[0], argRow[b], argCol[0])];
+		dependencies[index][COL][i-1] = &data[Index(argBoxRow[0], argBoxCol[a], argRow[0], argCol[b])];
+		dependencies[index][BOX][i-1] = &data[Index(argBoxRow[0], argBoxCol[0], argRow[a], argCol[b])];
 	}
 }
 
-void Board::SolvedPositions(bool o[BOARDSIZE])
+// literally what i've never seen a actual need for a getter
+// before this day what has happened to me
+char Board::GetDependency(int i, int j, int k)
 {
-	for(int i = 0; i < BOARDSIZE; i++)
-		o[i] = data[i] != 0;
+	return *(dependencies[i][j][k]);
 }
 
 void Board::Clear()
@@ -182,6 +183,11 @@ void Board::Clear()
 void Board::Apply(Mutation m)
 {
 	data[m.index] = m.value;
+}
+
+void Board::UnApply(Mutation m)
+{
+	data[m.index] = 0;
 }
 
 bool Board::isValid()
@@ -197,6 +203,9 @@ bool Board::isValid()
 			for (int k=0; k<3; k++) 
 			{
 				bool check[SIZE];
+				for (int l=0; l<SIZE; l++) {
+					check[l] = false;
+				}
 				for (int l=0; l<SIZE-1; l++)
 				{
 					//std::cout << char(*dependencies[val][k][l] + '0') << " at " << k << " " << l << std::endl;
@@ -205,26 +214,25 @@ bool Board::isValid()
 					}
 					else if (!check[*dependencies[val][k][l]-1])
 					{
-						check[*dependencies[val][k][l]-1] = true;
+						//std::cout << int(*dependencies[val][k][l]-1) << std::endl;
+						check[int(*dependencies[val][k][l]-1)] = true;
 					}
 					else
 					{
-						//std::cout << "fails here1" << std::endl;
+						std::cout << "fails here1" << std::endl;
 						return false;
 					}
 				}
-				if (!check[this->Get(val)-1]) 
-				{
-					check[this->Get(val)-1] = true;
+				if (int(this->Get(val)) != 0) {
+					if (check[(this->Get(val))-1]) {
+						//std::cout << "fails here2" << std::endl;
+						//std::cout << val << " hello :" << int(this->Get(val)-1) << " djkasjdk" << std::endl;
+						return false;
+					} 
 				}
-				else 
-				{
-					//std::cout << "fails here2" << std::endl;
-					return false;
-				}
-				for (int l=0; l<SIZE; l++) {
-					check[l] = false;
-				}
+				//for (int l=0; l<SIZE; l++) {
+				//	check[l] = false;
+				//}
 				//for (int l=0; l<SIZE; l++) 
 				//{
 					//std::cout << "fails here3" << std::endl;
@@ -234,36 +242,6 @@ bool Board::isValid()
 			}
 		}
 	}
-	
-	/*
-	for (int i=0; i<BOARDSIZE; i++) {
-		//check box
-		for (int j=0; j<SIZE; j++){
-			int val = (i/SIZE/BOXSIZE)*BOXSIZE*SIZE + ((i%SIZE)/BOXSIZE)*BOXSIZE;
-			val = val + j%BOXSIZE + (j/BOXSIZE)*SIZE;
-			if (val == i) continue;
-			if (data[val] == data[i]) {
-				return false;
-			}
-		}
-		//check row
-		for (int j=0;j<COLSIZE;j++){
-			int val = i/SIZE*SIZE + j;
-			if (val == i) continue;
-			if (data[val] == data[i]) {
-				return false;
-			}
-		}
-		//check column
-		for (int j=0;j<COLSIZE;j++){
-			int val = j*SIZE + i%SIZE;
-			if (val == i) continue;
-			if (data[val] == data[i]) {
-				return false;
-			}
-		}
-	}
-	*/
 	return true;
 }
 

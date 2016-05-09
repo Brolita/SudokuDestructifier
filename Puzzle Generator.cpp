@@ -14,21 +14,15 @@ void InplaceShuffle(T* a, size_t n)
 }
 
 void PuzzleGenerator::GenerateMinimum(Board& board, Mutation muts[BOARDSIZE])
-{
+{	 
 	board.Clear();
-
-	PuzzleGenerator::GenerateFull(board, muts);
 	
+	PuzzleGenerator::GenerateFull(board, muts);
+
 	InplaceShuffle(muts, BOARDSIZE);
 	
 	Board completeBoard(board);
-	int solution = PuzzleGenerator::BinarySearchMinimum(board, completeBoard, muts, BOARDSIZE/2, BOARDSIZE/2);
-	
-	board.Clear();
-	for(int i = 0; i < solution; i++)
-	{
-		board.Apply(muts[i]);
-	}
+	PuzzleGenerator::SearchMinimum(board, completeBoard, muts);
 }
 	
 void PuzzleGenerator::GenerateFull(Board& board, Mutation muts[BOARDSIZE])
@@ -36,7 +30,13 @@ void PuzzleGenerator::GenerateFull(Board& board, Mutation muts[BOARDSIZE])
 	PlaceNext(1, 0, board, muts);
 }
 
-bool PuzzleGenerator::PlaceNext(int insert, int b, Board& board, Mutation muts[BOARDSIZE])
+bool PuzzleGenerator::PlaceNext
+(
+	  int      insert
+	, int      b
+	, Board&   board
+	, Mutation muts[BOARDSIZE]
+)
 {	
 	if(insert == SIZE+1) // end condition
 		return true;
@@ -44,12 +44,16 @@ bool PuzzleGenerator::PlaceNext(int insert, int b, Board& board, Mutation muts[B
 	int by = b / BOXSIZE, bx = b % BOXSIZE;	// box from iterator
 	int count = 0;
 	int candidates[SIZE]; // candidates positions in the box, max of the size of the box
+
 	for(int o = 0; o < SIZE; o++)
 	{
 		int oy = o / BOXSIZE, ox = o % BOXSIZE;	// position in the box
+
 		int index = board.Index(bx,by,ox,oy);	// get index in the box
+
 		bool placeable = board[index] == 0		// if I can place the value
-			&& Solver::CanPlace(insert, board.dependencies[index]);
+			&& Solver::CanPlace(insert, board, index);
+
 		if(placeable) 
 		{
 			candidates[count] = index; // push the candidate
@@ -70,7 +74,7 @@ bool PuzzleGenerator::PlaceNext(int insert, int b, Board& board, Mutation muts[B
 		m->index = candidates[i]; // save mutation
 		m->value = insert; 
 		
-		//std::cout << move_to(BOARD1Y, BOARD1X); // print board
+		//std::std::cout << move_to(BOARD1Y, BOARD1X); // print board
 		//board.printBoard();
 		
 		if(PlaceNext(insert + (b + 1)/SIZE, (b + 1)%SIZE, board, muts)) // recurse
@@ -84,26 +88,44 @@ bool PuzzleGenerator::PlaceNext(int insert, int b, Board& board, Mutation muts[B
 	return false;
 }
 
-int PuzzleGenerator::BinarySearchMinimum(Board& board, Board& completeBoard,
-	const Mutation muts[BOARDSIZE], int at, int remaining)
+void PuzzleGenerator::SearchMinimum(
+	  Board&         board
+	, Board&         completeBoard
+	, const Mutation muts[BOARDSIZE]
+)
 {	
-	board.Clear();
-	for(int i = 0; i < at; i++)
+	int r;
+	bool removed[BOARDSIZE] = { false };
+	for(int at = 0; at < BOARDSIZE; at++)
 	{
-		board.Apply(muts[i]);
-	}
-	
-	if(Solver::AltSolve(board, completeBoard))
-	{
-		if(remaining == 0)
-			return at + 1;
-		return BinarySearchMinimum(board, completeBoard, muts, at + remaining/2, remaining/2);
-	}
-	else
-	{
-		if(remaining == 0)
-			return at;
-		return BinarySearchMinimum(board, completeBoard, muts, at - remaining/2, remaining/2);
+		for(r = 0; r < BOARDSIZE; r++)
+		{
+			board.Clear();
+			for(int i = 0; i < BOARDSIZE; i++)
+			{
+				if(!removed[i])
+					board.Apply(muts[i]);
+			}
+			if(!removed[r])
+			{
+				board.UnApply(muts[r]);
+				if(!Solver::AltSolve(board, completeBoard))
+				{
+					removed[r] = true;
+					break;
+				}
+			}
+		}
+		if(!removed[r])
+		{
+			board.Clear();
+			for(int i = 0; i < BOARDSIZE; i++)
+			{
+				if(!removed[i])
+					board.Apply(muts[i]);
+			}
+			return ;
+		}
 	}
 }
 
