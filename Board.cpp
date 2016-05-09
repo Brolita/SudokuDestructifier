@@ -1,6 +1,6 @@
 #include "Build Settings.h"
-//#define newline std::endl
-#define newline cursor_down(1) << cursor_left( OUTPUTSIZEX )
+#define newline std::endl
+//#define newline cursor_down(1) << cursor_left( OUTPUTSIZEX )
 
 Board::Board()
 { 
@@ -219,7 +219,8 @@ bool Board::isValid()
 					}
 					else
 					{
-						std::cout << "fails here1" << std::endl;
+						//std::cout << "fails here1" << std::endl;
+						//printBoard();
 						return false;
 					}
 				}

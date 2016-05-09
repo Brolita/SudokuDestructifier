@@ -8,7 +8,7 @@ class DummyANet
 	public:
 		DummyANet(bool a);
 		
-		void FeedForward(float* input, float* output);
+		void FeedForward(double* input, double* output);
 	private:
 		bool inst;
 };

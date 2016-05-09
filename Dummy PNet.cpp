@@ -6,7 +6,7 @@ DummyPNet::DummyPNet(bool p)
 	inst = p;
 }
 
-void DummyPNet::FeedForward(float* input, float* output) 
+void DummyPNet::FeedForward(double* input, double* output) 
 {
 	//lol i don't even care get at me
 	if(!inst) return;

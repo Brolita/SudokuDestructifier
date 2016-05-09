@@ -6,33 +6,33 @@
 class NeuralNet 
 {
 	public:
-		NeuralNet(int _inputLayerSize, int _hiddenLayerSize, int _outputLayerSize, float _eps, float _eta);
+		NeuralNet(int _inputLayerSize, int _hiddenLayerSize, int _outputLayerSize, double _eps, double _eta);
 		NeuralNet(std::ifstream& input);
 		~NeuralNet();
 		
 		void Save(std::ostream& output);
 		
-		void FeedForward(float* input, float* output);
-		void BackPropagate(float* desired);
-		void Train(float* inputs, float* desired, int n);
+		void FeedForward(double* input, double* output);
+		void BackPropagate(double* desired);
+		void Train(double* inputs, double* desired, int n);
 	private:
 		Matrix W1;
 		Matrix W2;
 		Matrix dW1;
 		Matrix dW2;
-		float* Ain;
-		float* Aout;
-		float* Bin;
-		float* Bout;
-		float* Cin;
-		float eps;
-		float eta;
-		float* trainer;
+		double* Ain;
+		double* Aout;
+		double* Bin;
+		double* Bout;
+		double* Cin;
+		double eps;
+		double eta;
+		double* trainer;
 		int inputLayerSize;
 		int hiddenLayerSize;
 		int outputLayerSize;
-		float Sig(float a);
-		float SigPrimeAssisted(float y);
+		double Sig(double a);
+		double SigPrimeAssisted(double y);
 };
 
 #endif

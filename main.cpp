@@ -42,34 +42,51 @@ int main(int argc, char* argv[])
 	PuzzleGenerator::GenerateMinimum(b, muts);
 	b.printBoard();
 	*/
-	/*
+	
 	using namespace std;
+	cout << fixed << setprecision(3);
+	
+	for(int i = 0; i < atoi(argv[2]); ++i) {
+		rand();
+	}
+	srand(time(NULL));
+	
 	Board b;
 	Mutation m[BOARDSIZE];
 	PuzzleGenerator::GenerateMinimum(b, m);
-	*/
+	
 	/*
 	PuzzleGenerator::GenerateFull(b, m);
-	for(int i = 0; i < 10; ++i) {
-		b[rand() % BOARDSIZE] = 0;
+	int n = atoi(argv[1]);
+	//int n = 10;
+	while(n) {
+		int i = rand() % BOARDSIZE;
+		if(b[i]) {
+			b[i] = 0;
+			--n;
+		}
 	}
 	*/
-	/*
-	NeuralNet* p = new NeuralNet("3x3/PolicyNetwork.txt");
-	NeuralNet* a = new NeuralNet("3x3/AssignmentNetwork.txt");
+	
+	DummyPNet* p = new DummyPNet(1);
+	//std::ifstream ps("2x2/PolicyNetwork.txt");
+	//NeuralNet* p = new NeuralNet(ps);
+	
+	//DummyANet* a = new DummyANet(1);
+	std::ifstream as("2x2/AssignmentNetwork.txt");
+	NeuralNet* a = new NeuralNet(as);
 	
 	cout << BOARDSIZE - b.Count() << endl;
 	b.printBoard();
 	Destructifier d(p, a);
-	bool s = d.Destructify(b, BOARDSIZE - b.Count());
-	//Solver::BruteSolve(b);
+	bool s = d.Destructify(b, BOARDSIZE - b.Count(), atoi(argv[3]));
+	//bool s = Solver::BruteSolve(b);
 	
 	cout << s << endl;
 	
 	b.printBoard();
 	
 	return 0;
-	*/
 	
 	/*
 	NeuralNet n(2,3,2);
@@ -90,6 +107,7 @@ int main(int argc, char* argv[])
 	NeuralNet n(nSer);
 	n.Save(std::cout);
 	*/
+	/*
 	using namespace std;
 	signal (SIGINT,onCtrlC);
 	
@@ -155,5 +173,5 @@ int main(int argc, char* argv[])
 		iteration++; // ayy
 	}
 	return 0;
-	
+	*/
 }

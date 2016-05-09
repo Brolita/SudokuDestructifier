@@ -6,14 +6,18 @@
 class Destructifier
 {
 	public:
-		Destructifier(NeuralNet* p, NeuralNet* a);
-		bool Destructify(Board& board, int unfilled);
+		//Destructifier(DummyPNet* p, DummyANet* a);
+		Destructifier(DummyPNet* p, NeuralNet* a);
+		//Destructifier(NeuralNet* p, DummyANet* a);
+		bool Destructify(Board& board, int unfilled, bool debug);
 	
 	private:
-		NeuralNet* policy;
+		DummyPNet* policy;
+		//NeuralNet* policy;
+		//DummyANet* assign;
 		NeuralNet* assign;
 		
-		void sortProbs(float f[], int i[], int length); 
+		void sortProbs(double f[], int i[], int length); 
 };
 
 #endif

@@ -1,6 +1,6 @@
 #include "Build Settings.h"
 
-NeuralNet::NeuralNet(int _inputLayerSize, int _hiddenLayerSize, int _outputLayerSize, float _eps = 0, float _eta = 0)
+NeuralNet::NeuralNet(int _inputLayerSize, int _hiddenLayerSize, int _outputLayerSize, double _eps = 0, double _eta = 0)
 {
 	inputLayerSize = _inputLayerSize;
 	hiddenLayerSize = _hiddenLayerSize;
@@ -13,12 +13,12 @@ NeuralNet::NeuralNet(int _inputLayerSize, int _hiddenLayerSize, int _outputLayer
 	dW1.Initalize(inputLayerSize + 1, hiddenLayerSize, 0.f);
 	dW2.Initalize(hiddenLayerSize + 1, outputLayerSize, 0.f);
 	
-	Ain = (float*)malloc((inputLayerSize+ 1)*sizeof(float));
-	Aout = (float*)malloc(hiddenLayerSize*sizeof(float));
-	Bin = (float*)malloc((hiddenLayerSize + 1)*sizeof(float));
-	Bout = (float*)malloc(outputLayerSize*sizeof(float));
-	Cin = (float*)malloc(outputLayerSize*sizeof(float));
-	trainer = (float*)malloc(outputLayerSize*sizeof(float));
+	Ain = (double*)malloc((inputLayerSize+ 1)*sizeof(double));
+	Aout = (double*)malloc(hiddenLayerSize*sizeof(double));
+	Bin = (double*)malloc((hiddenLayerSize + 1)*sizeof(double));
+	Bout = (double*)malloc(outputLayerSize*sizeof(double));
+	Cin = (double*)malloc(outputLayerSize*sizeof(double));
+	trainer = (double*)malloc(outputLayerSize*sizeof(double));
 	
 	Ain[inputLayerSize] = 1;
 	Bin[inputLayerSize] = 1;
@@ -34,7 +34,7 @@ NeuralNet::~NeuralNet()
 	free(trainer);
 }
 
-void NeuralNet::FeedForward(float* input, float* output) 
+void NeuralNet::FeedForward(double* input, double* output) 
 {
 	for(int i = 0; i < inputLayerSize; i++)
 	{
@@ -79,10 +79,10 @@ void NeuralNet::FeedForward(float* input, float* output)
 	}
 }
 
-void NeuralNet::BackPropagate(float* desired)
+void NeuralNet::BackPropagate(double* desired)
 {
-	float dNet1[hiddenLayerSize + 1];
-	float dNet2[outputLayerSize];
+	double dNet1[hiddenLayerSize + 1];
+	double dNet2[outputLayerSize];
 	
 	for(int i = 0; i < outputLayerSize; i++)
 	{
@@ -133,12 +133,12 @@ void NeuralNet::BackPropagate(float* desired)
 	}
 }
 
-float NeuralNet::Sig(float a) 
+double NeuralNet::Sig(double a) 
 {
 	return 1.0f / (1.0f + exp(-1.0f * a));
 }
 
-float NeuralNet::SigPrimeAssisted(float y)
+double NeuralNet::SigPrimeAssisted(double y)
 {
 	return y * (1.0f - y);
 }
@@ -162,11 +162,11 @@ NeuralNet::NeuralNet(std::ifstream& input)
 	dW1.Initalize(inputLayerSize + 1, hiddenLayerSize, 1.0f);
 	dW2.Initalize(hiddenLayerSize + 1, outputLayerSize, 1.0f);
 	
-	Ain = (float*)malloc((inputLayerSize+ 1)*sizeof(float));
-	Aout = (float*)malloc(hiddenLayerSize*sizeof(float));
-	Bin = (float*)malloc((hiddenLayerSize + 1)*sizeof(float));
-	Bout = (float*)malloc(outputLayerSize*sizeof(float));
-	Cin = (float*)malloc(outputLayerSize*sizeof(float));
+	Ain = (double*)malloc((inputLayerSize+ 1)*sizeof(double));
+	Aout = (double*)malloc(hiddenLayerSize*sizeof(double));
+	Bin = (double*)malloc((hiddenLayerSize + 1)*sizeof(double));
+	Bout = (double*)malloc(outputLayerSize*sizeof(double));
+	Cin = (double*)malloc(outputLayerSize*sizeof(double));
 	
 	Ain[inputLayerSize] = 1;
 	Bin[inputLayerSize] = 1;
@@ -213,9 +213,9 @@ void NeuralNet::Save(std::ostream& out)
 	}
 }
 
-float Distance(float* a, float* b, int n)
+double Distance(double* a, double* b, int n)
 {
-	float out = 0;
+	double out = 0;
 	for(int i = 0; i < n; i++)
 	{
 		//std::cout << "trainer: " << a[i] << " desired " << b[i] << std::endl;
@@ -225,13 +225,13 @@ float Distance(float* a, float* b, int n)
 	return sqrtf(out);
 }
 
-void NeuralNet::Train(float* inputs, float* desired, int n)
+void NeuralNet::Train(double* inputs, double* desired, int n)
 {
 	std::cout << "starting training" << std::endl;
 	for(int i = 0; i < n; i++)
 	{
 		int a = i * inputLayerSize;
-		FeedForward(&inputs[a], (float*)trainer);
+		FeedForward(&inputs[a], (double*)trainer);
 		while(Distance(trainer, &desired[a], outputLayerSize) > eps)
 		{
 			std::cout << Distance(trainer, &desired[a], outputLayerSize) << std::endl;
