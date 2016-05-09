@@ -14,8 +14,8 @@ I'm literally too good TM
 #include "Build Settings.h"
 
 //Destructifier::Destructifier(DummyPNet* p, DummyANet* a) {
-Destructifier::Destructifier(DummyPNet* p, NeuralNet* a) {
-//Destructifier::Destructifier(NeuralNet* p, DummyANet* a) {
+//Destructifier::Destructifier(DummyPNet* p, NeuralNet* a) {
+Destructifier::Destructifier(NeuralNet* p, DummyANet* a) {
 	policy = p;
 	assign = a;
 }
@@ -42,10 +42,32 @@ bool Destructifier::Destructify(Board& board, int unfilled, bool debug) {
 	
 	/*
 	for(int i = 0; i < BOARDSIZE; ++i) {
-		std::cout << policyOutput[i] << '\t' << indices[i] << std::endl;
+		std::cout << policyOutput[i] << '\t'
 	}
-	return 0;
+	std::cout << std::endl;
 	*/
+	for(int i = 0; i < BOARDSIZE; ++i) {
+		std::cout << indices[i] << '\t';
+	}
+	//return 0;
+	std::cout << std::endl << std::endl;
+	
+	
+	for(int pi = 0; pi < BOARDSIZE; ++pi) {
+		int num = 0;
+		for(int gi = 0; gi < 3; ++gi) {
+			for(int di = 0; di < SIZE - 1; ++di) {
+				num += *(board.dependencies[indices[pi]][gi][di]) > 0 ? 1 : 0;
+//				std::cout << (int)*(board.dependencies[indices[pi]][gi][di]) << '\t';
+//				std::cout << std::endl;
+			}
+//		std::cout << std::endl;
+		}
+//		std::cout << std::endl;
+		std::cout << num << '\t';
+	}
+	std::cout << std::endl;
+	return 0;
 	
 	for(int pi = 0; pi < BOARDSIZE; ++pi) {
 		if(board[indices[pi]] == 0) { //only operate on empty spaces
@@ -58,29 +80,28 @@ bool Destructifier::Destructify(Board& board, int unfilled, bool debug) {
 			int ni = 0;
 			for(int gi = 0; gi < 3; ++gi) {
 				for(int di = 0; di < SIZE - 1; ++di) {
-					std::cout << (int)*(board.dependencies[indices[pi]][gi][di]) << ":\t";
+					//std::cout << (int)*(board.dependencies[indices[pi]][gi][di]) << ":\t";
 					for(int bi = 0; bi < SIZE; ++bi) {
 						assignInput[ni] = (bi + 1 == *(board.dependencies[indices[pi]][gi][di]));
-						std::cout << assignInput[ni] << ' ';
+						//std::cout << assignInput[ni] << ' ';
 						++ni;
 					}
-					std::cout << std::endl;
+					//std::cout << std::endl;
 				}
 			}
-			std::cout << std::endl;
-
+			//std::cout << std::endl;
 			
 			double assignOutput[SIZE];
 			assign->FeedForward(assignInput, assignOutput); //get output from assignment NN
 			
-			
+			/*
 			std::cout << indices[pi] << ":\t";
 			for(int i = 0; i < SIZE; ++i) {
 				std::cout << assignOutput[i] << '\t';
 			}
 			std::cout << std::endl;
 			return 0;
-			
+			*/
 			
 			int vals[SIZE]; //map indices in assignOutput to cell values
 			for(int vi = 0; vi < SIZE; ++vi) {

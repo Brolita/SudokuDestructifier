@@ -41,7 +41,7 @@
 #define NULLHI BOARDSIZE + 1
 
 //For Destructifier 
-#define PRUNE_POLICY 0.99
+#define PRUNE_POLICY 0
 #define PRUNE_ASSIGN 0
 #define VALIDATE_ASSIGN 0.5
 #define DEPENDENCYSIZE 3 * (SIZE-1) * SIZE

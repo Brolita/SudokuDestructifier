@@ -68,13 +68,13 @@ int main(int argc, char* argv[])
 	}
 	*/
 	
-	DummyPNet* p = new DummyPNet(1);
-	//std::ifstream ps("2x2/PolicyNetwork.txt");
-	//NeuralNet* p = new NeuralNet(ps);
+	//DummyPNet* p = new DummyPNet(1);
+	std::ifstream ps("2x2/PolicyNetwork.txt");
+	NeuralNet* p = new NeuralNet(ps);
 	
-	//DummyANet* a = new DummyANet(1);
-	std::ifstream as("2x2/AssignmentNetwork.txt");
-	NeuralNet* a = new NeuralNet(as);
+	DummyANet* a = new DummyANet(1);
+	//std::ifstream as("2x2/AssignmentNetwork.txt");
+	//NeuralNet* a = new NeuralNet(as);
 	
 	cout << BOARDSIZE - b.Count() << endl;
 	b.printBoard();
