@@ -169,21 +169,21 @@ NeuralNet::NeuralNet(std::ifstream& input)
 	Cin = (double*)malloc(outputLayerSize*sizeof(double));
 	
 	Ain[inputLayerSize] = 1;
-	Bin[inputLayerSize] = 1;
+	Bin[hiddenLayerSize] = 1;
 		  
-	for(int i = 0; i < inputLayerSize + 1; i++)
+	for(int i = 0; i < hiddenLayerSize; i++)
 	{
-		for(int j = 0; j < hiddenLayerSize; j++)
+		for(int j = 0; j < inputLayerSize + 1; j++)
 		{
-			input >> W1[i][j];
+			input >> W1[j][i];
 		}
 	}
 	
-	for(int i = 0; i < hiddenLayerSize + 1; i++)
+	for(int i = 0; i < outputLayerSize; i++)
 	{
-		for(int j = 0; j < outputLayerSize; j++)
+		for(int j = 0; j < hiddenLayerSize + 1; j++)
 		{
-			input >> W2[i][j];
+			input >> W2[j][i];
 		}
 	}
 }
@@ -193,21 +193,21 @@ void NeuralNet::Save(std::ostream& out)
 	out << "NN " << inputLayerSize << " " 
 			<< hiddenLayerSize << " "
 			<< outputLayerSize << "\n";
-	for(int i = 0; i < inputLayerSize + 1; i++)
+	for(int i = 0; i < hiddenLayerSize; i++)
 	{
-		for(int j = 0; j < hiddenLayerSize; j++)
+		for(int j = 0; j < inputLayerSize + 1; j++)
 		{
-			out << W1[i][j] << " ";
+			out << W1[j][i] << " ";
 		}
 		out << "\n";
 	}
 	out << "\n";
 	
-	for(int i = 0; i < hiddenLayerSize + 1; i++)
+	for(int i = 0; i < outputLayerSize; i++)
 	{
-		for(int j = 0; j < outputLayerSize; j++)
+		for(int j = 0; j < hiddenLayerSize + 1; j++)
 		{
-			out << W2[i][j] << " ";
+			out << W2[j][i] << " ";
 		}
 		out << "\n";
 	}

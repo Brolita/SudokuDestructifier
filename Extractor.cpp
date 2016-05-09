@@ -1,64 +1,57 @@
 #include "Build Settings.h"
 
 
-void Extractor::ExtractForPolicy(Mutation m, Board& b, std::ofstream* ofs) {
-	char output[BOARDSIZE];
-	char outputM[BOARDSIZE];
+void Extractor::ExtractForPolicy(Mutation m, Board& b, std::ofstream* ofs) 
+{	
+	int mbfGoal = 0;
+	for (int v = 0; v < SIZE; v++)
+		mbfGoal += Solver::CanPlace(v+1, b, m.index);
 	
 	for (int i = 0; i < BOARDSIZE; i++) 
 	{
-		if (b.Get(i) == 0) 
-			output[i] = '0';
-		else 
-			output[i] = '1';
+		*ofs << (b.Get(i) != 0) << " ";
+	}
+	
+	*ofs << '\t';
+	
+	for (int i = 0; i < BOARDSIZE; i++) 
+	{
+		int mbf = 0;
+		for (int v = 0; v < SIZE; v++) {
+			mbf += Solver::CanPlace(v+1, b, i) && (b[i] == 0);
+		}
 		
-		if (m.index == i)
-			outputM[i] = '1';
-		else 
-			outputM[i] = '0';
+		*ofs << (mbf == mbfGoal) << " ";
 	}
 	
-	ofs->write(output, BOARDSIZE);
-	ofs->write(outputM, BOARDSIZE);
-	
-	/*std::cout << "[";
-	for (int i=0; i < BOARDSIZE; i++)
-	{
-		std::cout << " " << output[i];
-	}
-	std::cout << " ]\n";
-	std::cout << "[";
-	for (int i=0; i < BOARDSIZE; i++)
-	{
-		std::cout << " " << outputM[i];
-	} 
-	std::cout << " ]\n";*/
+	*ofs << std::endl;
 }
 
 void Extractor::ExtractForAssignment(Mutation m, Board& b, std::ofstream* ofs) 
 {
-	char output[DEPENDENCYSIZE + SIZE];
-
+	bool berOptions[SIZE];
+	
+	int c = 0;
 	for (int j = 0; j < 3; j++) 
 	{
 		for (int k = 0; k < SIZE-1; k++) 
 		{
-			bool berOptions[SIZE];
-			SetBool(berOptions, *(b.dependencies[m.value][j][k]));
+			SetBool(berOptions, *(b.dependencies[m.index][j][k]));
 			for (int i = 0; i < SIZE; i++) 
 			{
-				output[(j*(SIZE-1) + k)*SIZE + i] = berOptions[i] + '0';
+				*ofs << berOptions[i] << " ";
+				c++;
 			}
 		}
 	}
-
-	ofs->write(output, DEPENDENCYSIZE + SIZE);
 	
-	/*
-	std::cout << "[";
-	for (int i = 0; i < ASSIGNMENT_NN_LENGTH; i++) {
-		std::cout << " " << output[i];
+	*ofs << '\t';
+	
+	for (int i = 0; i < SIZE; i++)
+	{
+		*ofs << Solver::CanPlace(i + 1, b, m.index) << " ";
 	}
-	std::cout << " ]\n";*/
+	
+	*ofs << std::endl;
 }
 

@@ -14,8 +14,9 @@ I'm literally too good TM
 #include "Build Settings.h"
 
 //Destructifier::Destructifier(DummyPNet* p, DummyANet* a) {
-Destructifier::Destructifier(DummyPNet* p, NeuralNet* a) {
+//Destructifier::Destructifier(DummyPNet* p, NeuralNet* a) {
 //Destructifier::Destructifier(NeuralNet* p, DummyANet* a) {
+Destructifier::Destructifier(NeuralNet* p, NeuralNet* a) {
 	policy = p;
 	assign = a;
 }
@@ -39,6 +40,18 @@ bool Destructifier::Destructify(Board& board, int unfilled, bool debug) {
 		indices[ii] = ii;
 	}
 	sortProbs(policyOutput, indices, BOARDSIZE);
+	
+	for(int ii = 0; ii < BOARDSIZE; ++ii)
+	{
+		std::cout << indices[ii] << "\t";
+	}
+	std::cout << "\n";
+	for(int ii = 0; ii < BOARDSIZE; ++ii)
+	{
+		std::cout << policyOutput[ii] << "\t";
+	}
+	
+	std::cout << std::endl;
 	
 	/*
 	for(int i = 0; i < BOARDSIZE; ++i) {

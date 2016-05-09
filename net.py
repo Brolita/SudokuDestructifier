@@ -15,33 +15,26 @@ outputlayer = int(sys.argv[3])
 eps = float(sys.argv[4])
 eta = float(sys.argv[5])
 epochs = 1
-skipCount = 5
-files = [sys.argv[6]]
+skipCount = 1
+file = sys.argv[6]
 
 		
-def data_from_files(files, inputlayer, outputlayer):
-	for file in files:
-		with open(file, "rb") as f:
-			input = []
-			output = []
-			skip = 0
-			while True:
-				chunk = f.read(1)
-				if skip == 0:
-					if chunk:
-						if len(input) < inputlayer:
-							input.append(int(chunk))
-						elif len(output) < outputlayer:
-							output.append(int(chunk))
-						else:
-							yield input, output
-							skip = skipCount * (inputlayer +outputlayer)
-							input = []
-							output = []
-				elif chunk:
-					skip += -1
-				else:
-					break
+def data_from_files(file, inputlayer, outputlayer):
+	with open(file, "rb") as f:
+		skip = 0
+		while True:
+			chunk = f.readline().strip()
+			if skip == 0:
+				if chunk:
+					data = chunk.split("\t")
+					input = [int(x) for x in data[0].split()]
+					output = [int(x) for x in data[1].split()]
+					skip = skipCount
+					yield input, output
+			elif chunk:
+				skip += -1
+			else:
+				break
 
 ''' Neural Network '''
 
@@ -103,14 +96,12 @@ try:
 	for i in range(epochs):
 		print >> sys.stderr, "Run", i + 1, "..."
 		j = 0
-		for (input, output) in data_from_files(files, inputlayer, outputlayer):
+		for (input, output) in data_from_files(file, inputlayer, outputlayer):
 			j += 1
-			if j%100 == 0:
+			if j%1000 == 0:
 				print >> sys.stderr, j, "done"
 			net.processData(input, output, eta)
-		if j == 1000000:
-			break
-		print j
+	
 except KeyboardInterrupt:
 	pass
 

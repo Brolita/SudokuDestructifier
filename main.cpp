@@ -35,14 +35,8 @@ void ReadBoard(std::ifstream &file, Board& b) {
 
 
 int main(int argc, char* argv[])
-{
+{	
 	/*
-	Board b;
-	Mutation muts[BOARDSIZE];
-	PuzzleGenerator::GenerateMinimum(b, muts);
-	b.printBoard();
-	*/
-	
 	using namespace std;
 	cout << fixed << setprecision(3);
 	
@@ -55,22 +49,9 @@ int main(int argc, char* argv[])
 	Mutation m[BOARDSIZE];
 	PuzzleGenerator::GenerateMinimum(b, m);
 	
-	/*
-	PuzzleGenerator::GenerateFull(b, m);
-	int n = atoi(argv[1]);
-	//int n = 10;
-	while(n) {
-		int i = rand() % BOARDSIZE;
-		if(b[i]) {
-			b[i] = 0;
-			--n;
-		}
-	}
-	*/
-	
-	DummyPNet* p = new DummyPNet(1);
-	//std::ifstream ps("2x2/PolicyNetwork.txt");
-	//NeuralNet* p = new NeuralNet(ps);
+	//DummyPNet* p = new DummyPNet(1);
+	std::ifstream ps("2x2/PolicyNetwork.txt");
+	NeuralNet* p = new NeuralNet(ps);
 	
 	//DummyANet* a = new DummyANet(1);
 	std::ifstream as("2x2/AssignmentNetwork.txt");
@@ -78,6 +59,7 @@ int main(int argc, char* argv[])
 	
 	cout << BOARDSIZE - b.Count() << endl;
 	b.printBoard();
+	
 	Destructifier d(p, a);
 	bool s = d.Destructify(b, BOARDSIZE - b.Count(), atoi(argv[3]));
 	//bool s = Solver::BruteSolve(b);
@@ -85,29 +67,8 @@ int main(int argc, char* argv[])
 	cout << s << endl;
 	
 	b.printBoard();
-	
-	return 0;
-	
-	/*
-	NeuralNet n(2,3,2);
-	float output[] = {0.3f, 0.f};
-	float input[] = {.2, .3};
-	n.FeedForward(input, output);
-	float desired[] = {0.5f, .1f};
-	for(int i = 0; i < 5; i++)
-	{
-		n.BackPropagate(desired);
-		n.FeedForward(input, output);
-	}
-	
-	n.Save(std::cout);
 	*/
-	/*
-	std::ifstream nSer("output.txt");
-	NeuralNet n(nSer);
-	n.Save(std::cout);
-	*/
-	/*
+	
 	using namespace std;
 	signal (SIGINT,onCtrlC);
 	
@@ -165,13 +126,14 @@ int main(int argc, char* argv[])
 				 << "     \n" << progress << flush;
 			}
 			
-			if(iteration * PROGRESSBAR_SIZE * PER_TICK + i > 1000000)
+			if(iteration * PROGRESSBAR_SIZE * PER_TICK + i > 200000)
 			{
 				return 0;
 			}
 		}
 		iteration++; // ayy
 	}
+	
 	return 0;
-	*/
+	
 }

@@ -7,13 +7,14 @@ class Destructifier
 {
 	public:
 		//Destructifier(DummyPNet* p, DummyANet* a);
-		Destructifier(DummyPNet* p, NeuralNet* a);
+		//Destructifier(DummyPNet* p, NeuralNet* a);
 		//Destructifier(NeuralNet* p, DummyANet* a);
+		Destructifier(NeuralNet* p, NeuralNet* a);
 		bool Destructify(Board& board, int unfilled, bool debug);
 	
 	private:
-		DummyPNet* policy;
-		//NeuralNet* policy;
+		//DummyPNet* policy;
+		NeuralNet* policy;
 		//DummyANet* assign;
 		NeuralNet* assign;
 		
