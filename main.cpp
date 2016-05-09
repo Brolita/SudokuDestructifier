@@ -36,14 +36,17 @@ void ReadBoard(std::ifstream &file, Board& b) {
 
 int main(int argc, char* argv[])
 {	
-	/*
+	//SOLVE A RANDOM PUZZLE
 	using namespace std;
-	cout << fixed << setprecision(3);
+	//cout << fixed << setprecision(3);
 	
+	/*
 	for(int i = 0; i < atoi(argv[2]); ++i) {
 		rand();
 	}
+	*/
 	srand(time(NULL));
+	cout << "starting: " << endl;
 	
 	Board b;
 	Mutation m[BOARDSIZE];
@@ -57,18 +60,22 @@ int main(int argc, char* argv[])
 	std::ifstream as("2x2/AssignmentNetwork.txt");
 	NeuralNet* a = new NeuralNet(as);
 	
-	cout << BOARDSIZE - b.Count() << endl;
+	//cout << BOARDSIZE - b.Count() << endl;
 	b.printBoard();
 	
 	Destructifier d(p, a);
-	bool s = d.Destructify(b, BOARDSIZE - b.Count(), atoi(argv[3]));
+	//bool s = d.Destructify(b, BOARDSIZE - b.Count(), atoi(argv[3]));
+	bool s = d.Destructify(b, BOARDSIZE - b.Count(), 0);
 	//bool s = Solver::BruteSolve(b);
 	
-	cout << s << endl;
+	cout << (s ? "success" : "failed") << endl;
+	//cout << s << endl;
 	
 	b.printBoard();
-	*/
 	
+	
+	//GENERATE DATA AND TRAIN NETWORKS:
+	/*
 	using namespace std;
 	signal (SIGINT,onCtrlC);
 	
@@ -135,5 +142,5 @@ int main(int argc, char* argv[])
 	}
 	
 	return 0;
-	
+	*/
 }

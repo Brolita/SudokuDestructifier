@@ -41,6 +41,7 @@ bool Destructifier::Destructify(Board& board, int unfilled, bool debug) {
 	}
 	sortProbs(policyOutput, indices, BOARDSIZE);
 	
+	/*
 	for(int ii = 0; ii < BOARDSIZE; ++ii)
 	{
 		std::cout << indices[ii] << "\t";
@@ -52,6 +53,7 @@ bool Destructifier::Destructify(Board& board, int unfilled, bool debug) {
 	}
 	
 	std::cout << std::endl;
+	*/
 	
 	/*
 	for(int i = 0; i < BOARDSIZE; ++i) {
@@ -59,13 +61,15 @@ bool Destructifier::Destructify(Board& board, int unfilled, bool debug) {
 	}
 	std::cout << std::endl;
 	*/
+	/*
 	for(int i = 0; i < BOARDSIZE; ++i) {
 		std::cout << indices[i] << '\t';
 	}
+	*/
 	//return 0;
-	std::cout << std::endl << std::endl;
+	//std::cout << std::endl << std::endl;
 	
-	
+	/*
 	for(int pi = 0; pi < BOARDSIZE; ++pi) {
 		int num = 0;
 		for(int gi = 0; gi < 3; ++gi) {
@@ -81,6 +85,7 @@ bool Destructifier::Destructify(Board& board, int unfilled, bool debug) {
 	}
 	std::cout << std::endl;
 	return 0;
+	*/
 	
 	for(int pi = 0; pi < BOARDSIZE; ++pi) {
 		if(board[indices[pi]] == 0) { //only operate on empty spaces
