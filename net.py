@@ -9,20 +9,15 @@ import sys
 eps = None
 eta = None
 epochs = None
-inputlayer = 81
-outputlayer = 81
-skipCount = 100
-files = ["PolicyData1.txt", "PolicyData2.txt"]
+inputlayer = int(sys.argv[1])
+hiddenlayer = int(sys.argv[2])
+outputlayer = int(sys.argv[3])
+eps = float(sys.argv[4])
+eta = float(sys.argv[5])
+epochs = 1
+skipCount = 5
+files = [sys.argv[6]]
 
-try:
-	hiddenlayer = int(sys.argv[1])
-	eps = float(sys.argv[2])
-	eta = float(sys.argv[3])
-	epochs = int(sys.argv[4])
-except:
-	print "usage", sys.argv[0], "netsize eps eta epoch"
-	sys.exit(1)
-	
 		
 def data_from_files(files, inputlayer, outputlayer):
 	for file in files:
@@ -112,9 +107,9 @@ try:
 			j += 1
 			if j%100 == 0:
 				print >> sys.stderr, j, "done"
-			if j == 50000:
-				break
 			net.processData(input, output, eta)
+		if j == 1000000:
+			break
 		print j
 except KeyboardInterrupt:
 	pass

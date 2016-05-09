@@ -1,12 +1,13 @@
 #include "Build Settings.h"
 
 #define PROGRESSBAR_SIZE 100
-#define PER_TICK 10
+#define PER_TICK 100
 
 std::ofstream* ofsPolicy;
 std::ofstream* ofsAssignment;
 
 void SetBool(bool a[SIZE], char v) {
+	
     for(int i = 0; i < SIZE; i++)
         a[i] = false;
     if(v)
@@ -35,20 +36,27 @@ void ReadBoard(std::ifstream &file, Board& b) {
 
 int main(int argc, char* argv[])
 {
+	/*
+	Board b;
+	Mutation muts[BOARDSIZE];
+	PuzzleGenerator::GenerateMinimum(b, muts);
+	b.printBoard();
+	*/
+	/*
 	using namespace std;
 	Board b;
 	Mutation m[BOARDSIZE];
 	PuzzleGenerator::GenerateMinimum(b, m);
-
+	*/
 	/*
 	PuzzleGenerator::GenerateFull(b, m);
 	for(int i = 0; i < 10; ++i) {
 		b[rand() % BOARDSIZE] = 0;
 	}
 	*/
-	
-	DummyPNet* p = new DummyPNet(1);
-	DummyANet* a = new DummyANet(1);
+	/*
+	NeuralNet* p = new NeuralNet("3x3/PolicyNetwork.txt");
+	NeuralNet* a = new NeuralNet("3x3/AssignmentNetwork.txt");
 	
 	cout << BOARDSIZE - b.Count() << endl;
 	b.printBoard();
@@ -61,7 +69,7 @@ int main(int argc, char* argv[])
 	b.printBoard();
 	
 	return 0;
-	
+	*/
 	
 	/*
 	NeuralNet n(2,3,2);
@@ -82,8 +90,6 @@ int main(int argc, char* argv[])
 	NeuralNet n(nSer);
 	n.Save(std::cout);
 	*/
-	
-	/*
 	using namespace std;
 	signal (SIGINT,onCtrlC);
 	
@@ -99,6 +105,7 @@ int main(int argc, char* argv[])
 	
 	Board b;
 	Mutation muts[BOARDSIZE];
+	cout << clear_screen;
 	while(1)
 	{
 		for(int i = 0; i < PER_TICK * PROGRESSBAR_SIZE; i++)
@@ -117,8 +124,8 @@ int main(int argc, char* argv[])
 			}
 			for(int j = 0; j < c; j++)
 			{
-				Extractor::ExtractForPolicy(muts[i], b, ofsPolicy);
-				Extractor::ExtractForAssignment(muts[i], b, ofsAssignment);
+				Extractor::ExtractForPolicy(muts[j], b, ofsPolicy);
+				Extractor::ExtractForAssignment(muts[j], b, ofsAssignment);
 				b.Apply(muts[j]);
 			}
 			
@@ -134,16 +141,19 @@ int main(int argc, char* argv[])
 				{
 					progress[i/PER_TICK] = '#';
 				}
-			}
-			cout << cursor_left(PROGRESSBAR_SIZE + 2)
-				 << cursor_up(1)
+				cout << move_to(2,1)
 				 << "Iteration " << iteration+1 << ": puzzle " 
 				 << i << " size " << c
 				 << "     \n" << progress << flush;
+			}
+			
+			if(iteration * PROGRESSBAR_SIZE * PER_TICK + i > 1000000)
+			{
+				return 0;
+			}
 		}
 		iteration++; // ayy
 	}
-
 	return 0;
-	*/
+	
 }

@@ -13,7 +13,7 @@ I'm literally too good TM
 
 #include "Build Settings.h"
 
-Destructifier::Destructifier(DummyPNet* p, DummyANet* a) {
+Destructifier::Destructifier(NeuralNet* p, NeuralNet* a) {
 	policy = p;
 	assign = a;
 }

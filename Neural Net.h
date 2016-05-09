@@ -6,7 +6,7 @@
 class NeuralNet 
 {
 	public:
-		NeuralNet(int _inputLayerSize, int _hiddenLayerSize, int _outputLayerSize);
+		NeuralNet(int _inputLayerSize, int _hiddenLayerSize, int _outputLayerSize, float _eps, float _eta);
 		NeuralNet(std::ifstream& input);
 		~NeuralNet();
 		
@@ -14,6 +14,7 @@ class NeuralNet
 		
 		void FeedForward(float* input, float* output);
 		void BackPropagate(float* desired);
+		void Train(float* inputs, float* desired, int n);
 	private:
 		Matrix W1;
 		Matrix W2;
@@ -24,6 +25,9 @@ class NeuralNet
 		float* Bin;
 		float* Bout;
 		float* Cin;
+		float eps;
+		float eta;
+		float* trainer;
 		int inputLayerSize;
 		int hiddenLayerSize;
 		int outputLayerSize;

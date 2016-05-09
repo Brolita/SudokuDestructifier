@@ -1,6 +1,6 @@
 #include "Build Settings.h"
-#define newline std::endl
-//#define newline cursor_down(1) << cursor_left( OUTPUTSIZEX )
+//#define newline std::endl
+#define newline cursor_down(1) << cursor_left( OUTPUTSIZEX )
 
 Board::Board()
 { 

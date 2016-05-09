@@ -37,7 +37,7 @@ void Extractor::ExtractForPolicy(Mutation m, Board& b, std::ofstream* ofs) {
 
 void Extractor::ExtractForAssignment(Mutation m, Board& b, std::ofstream* ofs) 
 {
-	char output[ASSIGNMENT_NN_LENGTH];
+	char output[DEPENDENCYSIZE + SIZE];
 
 	for (int j = 0; j < 3; j++) 
 	{
@@ -52,7 +52,7 @@ void Extractor::ExtractForAssignment(Mutation m, Board& b, std::ofstream* ofs)
 		}
 	}
 
-	ofs->write(output, ASSIGNMENT_NN_LENGTH);
+	ofs->write(output, DEPENDENCYSIZE + SIZE);
 	
 	/*
 	std::cout << "[";

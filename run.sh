@@ -1,1 +1,1 @@
-./SudokuDestructifier
+./SudokuDestructifier PolicyData.txt Assignment.txt

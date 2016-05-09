@@ -2,3 +2,5 @@
 *.out
 *.stackdump
 output.txt
+2x2/*Data*.txt
+3x3/*Data*.txt

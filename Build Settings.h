@@ -14,12 +14,19 @@
 #include <fstream>
 #include <signal.h> 
 #include <sys/types.h>
+#include <sys/select.h>
+#include <sys/wait.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+
 
 #include "vt100.h"
 //For advanced output
 //	Can be OS locked if run on SOME old windows / non-standard linux
 
-#define BOXSIZE 3
+#define lineprint std::cout << __LINE__ << std::endl
+
+#define BOXSIZE 2
 #define SIZE ( BOXSIZE * BOXSIZE )
 #define COLSIZE ( BOXSIZE * BOXSIZE )
 #define ROWSIZE ( BOXSIZE * BOXSIZE )
@@ -32,7 +39,8 @@
 #define BOARD1X 3
 #define BOARD2X (BOARD1X + OUTPUTSIZEX + 2)
 #define NULLHI BOARDSIZE + 1
-#define ASSIGNMENT_NN_LENGTH 3*(SIZE-1)*SIZE + SIZE
+
+//For Destructifier 
 #define PRUNE_POLICY 0.99
 #define PRUNE_ASSIGN 0.99
 #define VALIDATE_ASSIGN 0.5
@@ -48,8 +56,10 @@
 #define BOX 2
 
 //For Neural Net
-#define ETA 10
-#define EPS 0.1
+#define P_ETA 1
+#define P_EPS 2
+#define A_ETA .1
+#define A_EPS 1.41
 
 #include "Board.h"
 #include "Solver.h"
