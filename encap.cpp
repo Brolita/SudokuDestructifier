@@ -3,10 +3,15 @@
 #define MAIN 0
 #define MANAGER 1
 #define GENERATOR 2
-#define POLICY 3
-#define ASSIGNMENT 4
-#define PRINTER 5 // for the swag i guess, only works on the first 6 boards
+#define EXTRACTOR 3
+#define POLICY 4
+#define ASSIGNMENT 5
+#define PRINTER 6 // for the swag i guess, only works on the first 6 boards
+
+#define PROCESS_COUNT 7
+
 #define QUEUE_SIZE 6 	//min of 6, max of 255
+
 
 #define M_WORKING_BOARDS 5003
 #define M_WORKING_MUTATIONS 5004
@@ -28,13 +33,13 @@ void SetBool(bool a[SIZE], char v) {
 char _processID = MAIN;
 int _write = STDOUT_FILENO;
 int _read = STDIN_FILENO;
-int _readFrom[4];
-int _writeTo[4];
-int _pid[4];
+int _readFrom[PROCESS_COUNT];
+int _writeTo[PROCESS_COUNT];
+int _pid[PROCESS_COUNT];
 
 const char* Name(int id = _processID)
 {
-	const char* array[] = { "MAIN", "MANAGER", "GENERATOR", "PolicyNetwork.txt", "AssignmentNetwork.txt", "PRINTER" };
+	const char* array[] = { "MAIN", "MANAGER", "GENERATOR", "EXTRACTOR", "POLICY", "ASSIGNMENT", "PRINTER" };
 	return array[id];
 }
 
@@ -76,6 +81,12 @@ void Recieve(void* buf, size_t len)
 
 int Open()
 {
+	for(int i = 0; i < PROCESS_COUNT; i++)
+	{
+		_readFrom[i] = -1;
+		_writeTo[i] = -1;
+	}
+	
 	int child_fd[2];
 	int parent_fd[2];
 	
@@ -90,8 +101,8 @@ int Open()
 		close(parent_fd[0]);
 		close(child_fd[1]);
 		
-		int child_fds[4][2];
-		int parent_fds[4][2];
+		int child_fds[5][2];
+		int parent_fds[5][2];
 		
 		pipe(child_fds[0]);
 		pipe(parent_fds[0]);
@@ -163,6 +174,24 @@ int Open()
 		close(child_fds[3][0]);
 		close(parent_fds[3][1]);
 		
+		pipe(child_fds[4]);
+		pipe(parent_fds[4]);
+		
+		if((_pid[EXTRACTOR] = fork()) == 0)
+		{
+			_processID = EXTRACTOR;
+			_read = child_fds[4][0];
+			_write = parent_fds[4][1];
+			close(parent_fds[4][0]);
+			close(child_fds[4][1]);
+			
+			
+			return 0;
+		}
+		
+		close(child_fds[4][0]);
+		close(parent_fds[4][1]);
+		
 		_readFrom[GENERATOR] = parent_fds[0][0];
 		_writeTo[GENERATOR] = child_fds[0][1];
 		
@@ -174,6 +203,9 @@ int Open()
 		
 		_readFrom[PRINTER] = parent_fds[3][0];
 		_writeTo[PRINTER] = child_fds[3][1];
+		
+		_readFrom[EXTRACTOR] = parent_fds[4][0];
+		_writeTo[EXTRACTOR] = child_fds[4][1];
 		
 		return 0;
 	}
@@ -190,10 +222,10 @@ void Alloc
 (
 	  Board*&    workingBoards
 	, Mutation*& workingMutations
-	, float*&    inputPols
-	, float*&    outputPols
-	, float*&    inputAsns
-		, float*&    outputAsns
+	, double*&    inputPols
+	, double*&    outputPols
+	, double*&    inputAsns
+	, double*&    outputAsns
 	, int*&		 counts
 ) 
 {
@@ -203,7 +235,7 @@ void Alloc
 		, QUEUE_SIZE * sizeof(Board)
 		, IPC_CREAT | 0666 
 	);
-	workingBoards = (Board*) shmat(m_boards_id, NULL, 0);
+	workingBoards = new (shmat(m_boards_id, NULL, 0)) Board[QUEUE_SIZE];
 	
 	int m_mutations_id = shmget
 	(
@@ -216,34 +248,34 @@ void Alloc
 	int m_input_policy = shmget
 	(
 		  M_INPUT_POLICY
-		, QUEUE_SIZE * BOARDSIZE * BOARDSIZE * sizeof(float)
+		, QUEUE_SIZE * BOARDSIZE * BOARDSIZE * sizeof(double)
 		, IPC_CREAT | 0666
 	);
-	inputPols = (float*) shmat(m_input_policy, NULL, 0);
+	inputPols = (double*) shmat(m_input_policy, NULL, 0);
 	
 	int m_output_policy = shmget
 	(
 		  M_OUTPUT_POLICY
-		, QUEUE_SIZE * BOARDSIZE * BOARDSIZE * sizeof(float)
+		, QUEUE_SIZE * BOARDSIZE * BOARDSIZE * sizeof(double)
 		, IPC_CREAT | 0666
 	);
-	outputPols = (float*) shmat(m_output_policy, NULL, 0);
+	outputPols = (double*) shmat(m_output_policy, NULL, 0);
 	
 	int m_input_assignment = shmget
 	(
 		  M_INPUT_ASSIGNMENT
-		, QUEUE_SIZE * BOARDSIZE * 3 * (SIZE-1) * SIZE * sizeof(float)
+		, QUEUE_SIZE * BOARDSIZE * 3 * (SIZE-1) * SIZE * sizeof(double)
 		, IPC_CREAT | 0666
 	);
-	inputAsns = (float*) shmat(m_input_assignment, NULL, 0);
+	inputAsns = (double*) shmat(m_input_assignment, NULL, 0);
 	
 	int m_output_assignment = shmget
 	(
 		  M_OUTPUT_ASSIGNMENT
-		, QUEUE_SIZE * BOARDSIZE * SIZE * sizeof(float)
+		, QUEUE_SIZE * BOARDSIZE * SIZE * sizeof(double)
 		, IPC_CREAT | 0666
 	);
-	outputAsns = (float*) shmat(m_output_assignment, NULL, 0);
+	outputAsns = (double*) shmat(m_output_assignment, NULL, 0);
 	
 	int m_count = shmget
 	(
@@ -274,10 +306,10 @@ int main()
 	
 	Board*    workingBoards;
 	Mutation* workingMutations;
-	float*    inputPols;
-	float*    outputPols;
-	float*    inputAsns;
-	float*    outputAsns;
+	double*    inputPols;
+	double*    outputPols;
+	double*    inputAsns;
+	double*    outputAsns;
 	int* 	  counts;
 	
 	Alloc (
@@ -294,6 +326,7 @@ int main()
 	
 	if(_processID == GENERATOR)
 	{
+		std::cout << Name() << ": " << getpid() << std::endl;
 		while(1)
 		{
 			char bIndex;
@@ -302,14 +335,32 @@ int main()
 			if(bIndex == -1)
 				return 0;
 			
-			//std::cout << Name() << " got " << (int)bIndex << std::endl;
+			std::cout << Name() << " got " << (int)bIndex << std::endl;
 			
 			PuzzleGenerator::GenerateMinimum(
 				  workingBoards[bIndex]
 				, &workingMutations[bIndex*BOARDSIZE]
 			);
+
+			std::cout << Name() << " finished " << (int)bIndex << std::endl; 
+			 
+			Send(&bIndex, 1);
+		}
+	}
+	if(_processID == EXTRACTOR)
+	{
+		std::cout << Name() << ": " << getpid() << std::endl;
+		while(1)
+		{
+			char bIndex;
+			Recieve(&bIndex, 1);
 			
-			counts[bIndex] = Extractor::GetExtractions(
+			if(bIndex == -1)
+				return 0;
+			
+			std::cout << Name() << " got " << (int)bIndex << std::endl;
+			
+			counts[bIndex] = Extractor::Extract(
 				  workingBoards[bIndex]
 				, &workingMutations[bIndex*BOARDSIZE]
 				, &inputPols[bIndex*BOARDSIZE*BOARDSIZE]
@@ -318,14 +369,15 @@ int main()
 				, &outputAsns[bIndex*BOARDSIZE*SIZE]
 			);
 			
-			//std::cout << Name() << " finished " << (int)bIndex << std::endl; 
+			std::cout << Name() << " finished " << (int)bIndex << std::endl; 
 			 
 			Send(&bIndex, 1);
 		}
 	}
 	if(_processID == POLICY)
 	{
-		NeuralNet* policy = new NeuralNet(BOARDSIZE, 180, BOARDSIZE);
+		std::cout << Name() << ": " << getpid() << std::endl;
+		NeuralNet* policy = new NeuralNet(BOARDSIZE, A_HIDDEN, BOARDSIZE, P_EPS, P_ETA);
 		while(1)
 		{
 			char bIndex;
@@ -339,7 +391,7 @@ int main()
 				return 0;
 			}
 			
-			//std::cout << Name() << " got " << (int)bIndex << std::endl;
+			std::cout << Name() << " got " << (int)bIndex << std::endl;
 			
 			policy->Train
 			(
@@ -348,14 +400,15 @@ int main()
 				, counts[bIndex]
 			);
 
-			//std::cout << Name() << " finished " << (int)bIndex << std::endl; 
+			std::cout << Name() << " finished " << (int)bIndex << std::endl; 
 			
 			Send(&bIndex, 1);
 		}
 	}
 	if(_processID == ASSIGNMENT)
 	{
-		NeuralNet* assignment = new NeuralNet(3*(SIZE-1)*SIZE, 90, SIZE);
+		std::cout << Name() << ": " << getpid() << std::endl;
+		NeuralNet* assignment = new NeuralNet(3*(SIZE-1)*SIZE, P_HIDDEN, SIZE, A_EPS, A_ETA);
 		while(1)
 		{
 			char bIndex;
@@ -369,7 +422,7 @@ int main()
 				return 0;
 			}
 			
-			//std::cout << Name() << " got " << (int)bIndex << std::endl;
+			std::cout << Name() << " got " << (int)bIndex << std::endl;
 			
 			assignment->Train
 			(
@@ -378,7 +431,7 @@ int main()
 				, counts[bIndex]
 			);
 			
-			//std::cout << Name() << " finished " << (int)bIndex << std::endl; 
+			std::cout << Name() << " finished " << (int)bIndex << std::endl; 
 			
 			Send(&bIndex, 1);	
 		}
@@ -417,10 +470,12 @@ int main()
 			t.tv_nsec = 83333333; //approx 12 frames a sec
 		
 			nanosleep(&t, &tawake);
-		}*/
+		}
+		*/
 	}
 	if(_processID == MANAGER)
 	{
+		std::cout << Name() << ": " << getpid() << std::endl;
 		bool stop = false;
 		char waiting = 0;
 		fd_set readfds;
@@ -437,6 +492,7 @@ int main()
 		{
 			FD_ZERO(&readfds);
 			FD_SET(_readFrom[GENERATOR],  &readfds);
+			FD_SET(_readFrom[EXTRACTOR],  &readfds);
 			FD_SET(_readFrom[POLICY],     &readfds);
 			FD_SET(_readFrom[ASSIGNMENT], &readfds);
 			FD_SET(_read, 				  &readfds); 
@@ -445,10 +501,16 @@ int main()
 			{
 				char bIndex;
 				RecieveFrom(GENERATOR, &bIndex, 1); 
-				sent[bIndex] = 2;
+				SendTo(EXTRACTOR, &bIndex, 1);
+			}	
+			if(FD_ISSET(_readFrom[EXTRACTOR], &readfds))
+			{
+				char bIndex;
+				RecieveFrom(EXTRACTOR, &bIndex, 1); 
+				sent[bIndex] = 1;
 				SendTo(POLICY, &bIndex, 1);
-				SendTo(ASSIGNMENT, &bIndex, 1);
-			}			
+				//SendTo(ASSIGNMENT, &bIndex, 1);
+			}				
 			if(FD_ISSET(_readFrom[POLICY], &readfds))
 			{
 				char bIndex;
@@ -491,6 +553,7 @@ int main()
 				char finish = -1;
 				SendTo(ASSIGNMENT, &finish, 1);
 				SendTo(POLICY, &finish, 1);
+				SendTo(EXTRACTOR, &finish, 1);
 				SendTo(GENERATOR, &finish, 1);
 				kill(_pid[PRINTER], SIGQUIT);
 				return STATUS_DONE;
@@ -499,6 +562,7 @@ int main()
 	}
 	if(_processID == MAIN)
 	{
+		std::cout << Name() << ": " << getpid() << std::endl;
 		while(1)
 		{
 			std::string input;

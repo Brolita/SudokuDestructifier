@@ -86,7 +86,7 @@ void NeuralNet::BackPropagate(double* desired)
 	
 	for(int i = 0; i < outputLayerSize; i++)
 	{
-		dNet2[i] = (Cin[i] - desired[i]) * SigPrimeAssisted(Cin[i]);
+		dNet2[i] = (desired[i] - Cin[i]) * SigPrimeAssisted(Cin[i]);
 	}
 	
 	for(int i = 0; i < outputLayerSize; i++)
@@ -120,7 +120,7 @@ void NeuralNet::BackPropagate(double* desired)
 	{
 		for(int j = 0; j < hiddenLayerSize; j++)
 		{
-			W1[i][j] += dW1[i][j];
+			W1[i][j] -= dW1[i][j];
 		}
 	}
 	
@@ -128,7 +128,7 @@ void NeuralNet::BackPropagate(double* desired)
 	{
 		for(int j = 0; j < outputLayerSize; j++)
 		{
-			W2[i][j] += dW2[i][j];
+			W2[i][j] -= dW2[i][j];
 		}
 	}
 }
@@ -230,11 +230,15 @@ void NeuralNet::Train(double* inputs, double* desired, int n)
 	std::cout << "starting training" << std::endl;
 	for(int i = 0; i < n; i++)
 	{
+		std::cout << i << std::endl;
 		int a = i * inputLayerSize;
 		FeedForward(&inputs[a], (double*)trainer);
+		int m = 0;
 		while(Distance(trainer, &desired[a], outputLayerSize) > eps)
 		{
-			std::cout << Distance(trainer, &desired[a], outputLayerSize) << std::endl;
+			m++;
+			if(m%1000 == 0)
+				std::cout << Distance(trainer, &desired[a], outputLayerSize) << std::endl;
 			BackPropagate(&desired[a]);
 			FeedForward(&inputs[a], trainer);
 		}

@@ -1,7 +1,7 @@
 #include "Build Settings.h"
 
 #define PROGRESSBAR_SIZE 100
-#define PER_TICK 100
+#define PER_TICK 10
 
 std::ofstream* ofsPolicy;
 std::ofstream* ofsAssignment;
@@ -120,13 +120,13 @@ int main(int argc, char* argv[])
 				{
 					progress[i/PER_TICK] = '#';
 				}
-				cout << move_to(2,1)
+			}
+			cout << move_to(2,1)
 				 << "Iteration " << iteration+1 << ": puzzle " 
 				 << i << " size " << c
 				 << "     \n" << progress << flush;
-			}
 			
-			if(iteration * PROGRESSBAR_SIZE * PER_TICK + i > 200000)
+			if(iteration * PROGRESSBAR_SIZE * PER_TICK + i > 1000000)
 			{
 				return 0;
 			}

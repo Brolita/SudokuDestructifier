@@ -57,9 +57,11 @@
 
 //For Neural Net
 #define P_ETA 1
-#define P_EPS 2
-#define A_ETA .1
-#define A_EPS 1.41
+#define P_EPS .3
+#define A_ETA 1
+#define A_EPS .3
+#define P_HIDDEN 32
+#define A_HIDDEN 36
 
 #include "Board.h"
 #include "Solver.h"

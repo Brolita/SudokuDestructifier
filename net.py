@@ -6,35 +6,39 @@ import sys
 
 ''' read arguments '''
 
-eps = None
-eta = None
-epochs = None
 inputlayer = int(sys.argv[1])
 hiddenlayer = int(sys.argv[2])
 outputlayer = int(sys.argv[3])
 eps = float(sys.argv[4])
 eta = float(sys.argv[5])
-epochs = 1
-skipCount = 1
 file = sys.argv[6]
+numFiles = int(sys.argv[7])
+stop = int(sys.argv[8])
+epochs = 1
+skipCount = 0
 
 		
 def data_from_files(file, inputlayer, outputlayer):
-	with open(file, "rb") as f:
-		skip = 0
-		while True:
-			chunk = f.readline().strip()
-			if skip == 0:
-				if chunk:
-					data = chunk.split("\t")
-					input = [int(x) for x in data[0].split()]
-					output = [int(x) for x in data[1].split()]
-					skip = skipCount
-					yield input, output
-			elif chunk:
-				skip += -1
-			else:
-				break
+	for i in xrange(numFiles):
+		fileName = file + str(i+1) + ".txt"
+		print >> sys.stderr, fileName
+		with open(fileName, "rb") as f:
+			skip = 0
+			while True:
+				chunk = f.readline().strip()
+				if skip == 0:
+					if chunk:
+						data = chunk.split("\t")
+						input = [int(x) for x in data[0].split()]
+						output = [int(x) for x in data[1].split()]
+						skip = skipCount
+						yield input, output
+					else:
+						break
+				elif chunk:
+					skip += -1
+				else:
+					break
 
 ''' Neural Network '''
 
@@ -93,14 +97,14 @@ net = NeuralNet(inputlayer, hiddenlayer, outputlayer)
 
 print >> sys.stderr, "Training..."
 try:
-	for i in range(epochs):
-		print >> sys.stderr, "Run", i + 1, "..."
-		j = 0
-		for (input, output) in data_from_files(file, inputlayer, outputlayer):
-			j += 1
-			if j%1000 == 0:
-				print >> sys.stderr, j, "done"
-			net.processData(input, output, eta)
+	j = 0
+	for (input, output) in data_from_files(file, inputlayer, outputlayer):
+		j += 1
+		if j%1000 == 0:
+			print >> sys.stderr, j, "done"
+		net.processData(input, output, eta)
+		if j == stop:
+			break
 	
 except KeyboardInterrupt:
 	pass
