@@ -45,6 +45,8 @@ int main(int argc, char* argv[])
 		rand();
 	}
 	*/
+	std::cout << clear_screen << std::endl;
+	
 	srand(time(NULL));
 	cout << "starting: " << endl;
 	
@@ -53,11 +55,11 @@ int main(int argc, char* argv[])
 	PuzzleGenerator::GenerateMinimum(b, m);
 	
 	//DummyPNet* p = new DummyPNet(1);
-	std::ifstream ps("2x2/PolicyNetwork.txt");
+	std::ifstream ps("3x3/PolicyNetwork.txt");
 	NeuralNet* p = new NeuralNet(ps);
 	
 	//DummyANet* a = new DummyANet(1);
-	std::ifstream as("2x2/AssignmentNetwork.txt");
+	std::ifstream as("3x3/AssignmentNetwork.txt");
 	NeuralNet* a = new NeuralNet(as);
 	
 	//cout << BOARDSIZE - b.Count() << endl;
@@ -65,7 +67,7 @@ int main(int argc, char* argv[])
 	
 	Destructifier d(p, a);
 	//bool s = d.Destructify(b, BOARDSIZE - b.Count(), atoi(argv[3]));
-	bool s = d.Destructify(b, BOARDSIZE - b.Count(), 0);
+	bool s = d.Destructify(b, BOARDSIZE - b.Count(), 1);
 	//bool s = Solver::BruteSolve(b);
 	
 	cout << (s ? "success" : "failed") << endl;

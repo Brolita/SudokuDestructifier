@@ -26,7 +26,7 @@
 
 #define lineprint std::cout << __LINE__ << std::endl
 
-#define BOXSIZE 2
+#define BOXSIZE 3
 #define SIZE ( BOXSIZE * BOXSIZE )
 #define COLSIZE ( BOXSIZE * BOXSIZE )
 #define ROWSIZE ( BOXSIZE * BOXSIZE )
@@ -41,9 +41,9 @@
 #define NULLHI BOARDSIZE + 1
 
 //For Destructifier 
-#define PRUNE_POLICY 0
-#define PRUNE_ASSIGN 0
-#define VALIDATE_ASSIGN 0.5
+#define PRUNE_POLICY 0.3
+#define PRUNE_ASSIGN 0.4
+#define VALIDATE_ASSIGN 0.7
 #define DEPENDENCYSIZE 3 * (SIZE-1) * SIZE
  
 //For Generator

@@ -12,14 +12,16 @@ outputlayer = int(sys.argv[3])
 eps = float(sys.argv[4])
 eta = float(sys.argv[5])
 file = sys.argv[6]
-numFiles = int(sys.argv[7])
+numFilesIn = int(sys.argv[7])
 stop = int(sys.argv[8])
+numFilesOut = int(sys.argv[9])
+fileOutName = sys.argv[10]
 epochs = 1
 skipCount = 0
 
 		
 def data_from_files(file, inputlayer, outputlayer):
-	for i in xrange(numFiles):
+	for i in xrange(numFilesIn):
 		fileName = file + str(i+1) + ".txt"
 		print >> sys.stderr, fileName
 		with open(fileName, "rb") as f:
@@ -96,21 +98,19 @@ class NeuralNet:
 net = NeuralNet(inputlayer, hiddenlayer, outputlayer)
 
 print >> sys.stderr, "Training..."
-try:
-	j = 0
-	for (input, output) in data_from_files(file, inputlayer, outputlayer):
-		j += 1
-		if j%1000 == 0:
-			print >> sys.stderr, j, "done"
-		net.processData(input, output, eta)
-		if j == stop:
-			break
-	
-except KeyboardInterrupt:
-	pass
+j = 0
+k = 0
+for (input, output) in data_from_files(file, inputlayer, outputlayer):
+	j += 1
+	if j%(stop/numFilesOut) == 0:
+		with open(fileOutName + str(k) + ".txt", "w+") as f:
+			f.write("NN" + " " + str(inputlayer) + " " + str(hiddenlayer) + " " + str(outputlayer))
+			f.write(np.array_str(net.W1))
+			f.write(np.array_str(net.W2))
+			k += 1
+		
+	net.processData(input, output, eta)
+	if j == stop:
+		break
 
-print "NN", inputlayer, hiddenlayer, outputlayer	
 
-print net.W1
-
-print net.W2

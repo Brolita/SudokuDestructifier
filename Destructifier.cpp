@@ -40,36 +40,28 @@ bool Destructifier::Destructify(Board& board, int unfilled, bool debug) {
 		indices[ii] = ii;
 	}
 	sortProbs(policyOutput, indices, BOARDSIZE);
-	
 	/*
-	for(int ii = 0; ii < BOARDSIZE; ++ii)
+	std::cout << std::setprecision(2) << std::fixed;
+	for(int ii = 0; ii < SIZE; ++ii)
 	{
-		std::cout << indices[ii] << "\t";
+		std::cout << indices[ii]%SIZE << ", " << indices[ii]/SIZE << "\t";
 	}
 	std::cout << "\n";
-	for(int ii = 0; ii < BOARDSIZE; ++ii)
+	for(int ii = 0; ii < SIZE; ++ii)
 	{
 		std::cout << policyOutput[ii] << "\t";
 	}
 	
 	std::cout << std::endl;
-	*/
-	
-	/*
+
 	for(int i = 0; i < BOARDSIZE; ++i) {
 		std::cout << policyOutput[i] << '\t'
 	}
 	std::cout << std::endl;
-	*/
-	/*
+
 	for(int i = 0; i < BOARDSIZE; ++i) {
 		std::cout << indices[i] << '\t';
 	}
-	*/
-	//return 0;
-	//std::cout << std::endl << std::endl;
-	
-	/*
 	for(int pi = 0; pi < BOARDSIZE; ++pi) {
 		int num = 0;
 		for(int gi = 0; gi < 3; ++gi) {
@@ -87,8 +79,14 @@ bool Destructifier::Destructify(Board& board, int unfilled, bool debug) {
 	return 0;
 	*/
 	
+	board.printBoard();
+	
 	for(int pi = 0; pi < BOARDSIZE; ++pi) {
+		std::cout << "Test " << indices[pi]/SIZE + 1 << ", " << indices[pi]%SIZE + 1 << " ~ " << policyOutput[pi] << std::endl;
 		if(board[indices[pi]] == 0) { //only operate on empty spaces
+			
+			
+		
 			if(policyOutput[pi] < PRUNE_POLICY) { //no spaces to fill
 				if(debug) std::cout << unfilled << ": no spaces to fill; return 0" << std::endl;
 				return 0;
@@ -133,8 +131,20 @@ bool Destructifier::Destructify(Board& board, int unfilled, bool debug) {
 					break;
 				}
 				
+				if(debug)
+					std::cout << "Test " << (indices[pi]/SIZE)+1 
+							  << ", " << (indices[pi]%SIZE)+1 
+							  << ": " << vals[ai] << " ~ " 
+							  << assignOutput[ai] << std::endl;
+				
+				
+				
 				board[indices[pi]] = vals[ai];
-				if(assignOutput[ai] > VALIDATE_ASSIGN || board.isValid()) { //isValid() called if needed
+				if(assignOutput[ai] > VALIDATE_ASSIGN || Solver::CanPlace(vals[ai], board, indices[pi])) { //isValid() called if needed
+					if(debug)
+						std::cout << "Place " << (indices[pi]/SIZE)+1 
+								  << ", " << (indices[pi]%SIZE)+1 
+								  << ": " << vals[ai] << std::endl;
 					if(debug) std::cout << unfilled << ": value assigned; recurse" << std::endl;
 					if(Destructify(board, unfilled - 1, debug)) { //recurse
 						if(debug) std::cout << unfilled << ": recursion sucess; return 1" << std::endl;
@@ -148,6 +158,7 @@ bool Destructifier::Destructify(Board& board, int unfilled, bool debug) {
 	}
 	
 	if(debug) std::cout << unfilled << ": reached end (filled space?); return 0" << std::endl;
+	exit(0);
 	return 0; //reached end
 }
 
