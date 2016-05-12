@@ -1,11 +1,4 @@
 #include "Build Settings.h"
-#include <chrono>
-#include <sys/time.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <fstream>
-#include <cstdlib>
-#include <tgmath.h>
 
 #define PROGRESSBAR_SIZE 100
 #define PER_TICK 10

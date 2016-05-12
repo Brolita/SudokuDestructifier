@@ -1,9 +1,5 @@
 #include "Build Settings.h"
 //#include <ctime>
-#include <iostream>///
-#include <ctime>///
-#include <ratio>///
-#include <chrono>
 
 #define PROGRESSBAR_SIZE 100
 #define PER_TICK 10
@@ -72,22 +68,16 @@ int main(int argc, char* argv[])
 	Destructifier d(p, a);
 	
 	//clock_t begin = clock();
-	std::chrono::high_resolution_clock::time_point begin = std::chrono::high_resolution_clock::now();
 	
 	//bool s = d.Destructify(b, BOARDSIZE - b.Count(), atoi(argv[3]));
 	//bool s = d.Destructify(b, BOARDSIZE - b.Count(), 0);
 	bool s = Solver::BruteSolve(b);
 	//bool s = 0;
 	//clock_t end = clock();
-	std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
 	
 	cout << (s ? "success" : "failed") << endl;
 	
 	b.printBoard();
-	
-	double span = std::chrono::duration_cast<std::chrono::duration<double>>(end - begin).count();
-	
-	cout << span << endl;
 	
 	
 	return 0;
