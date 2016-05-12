@@ -79,10 +79,11 @@ bool Destructifier::Destructify(Board& board, int unfilled, bool debug) {
 	return 0;
 	*/
 	
-	board.printBoard();
+	
+	//board.printBoard();
 	
 	for(int pi = 0; pi < BOARDSIZE; ++pi) {
-		std::cout << "Test " << indices[pi]/SIZE + 1 << ", " << indices[pi]%SIZE + 1 << " ~ " << policyOutput[pi] << std::endl;
+		//std::cout << "Test " << indices[pi]/SIZE + 1 << ", " << indices[pi]%SIZE + 1 << " ~ " << policyOutput[pi] << std::endl;
 		if(board[indices[pi]] == 0) { //only operate on empty spaces
 			
 			
@@ -140,7 +141,7 @@ bool Destructifier::Destructify(Board& board, int unfilled, bool debug) {
 				
 				
 				board[indices[pi]] = vals[ai];
-				if(assignOutput[ai] > VALIDATE_ASSIGN || Solver::CanPlace(vals[ai], board, indices[pi])) { //isValid() called if needed
+				if(assignOutput[ai] > VALIDATE_ASSIGN || Solver::CanPlace(vals[ai], board, indices[pi])) { //CanPlace() called if needed
 					if(debug)
 						std::cout << "Place " << (indices[pi]/SIZE)+1 
 								  << ", " << (indices[pi]%SIZE)+1 
@@ -158,7 +159,7 @@ bool Destructifier::Destructify(Board& board, int unfilled, bool debug) {
 	}
 	
 	if(debug) std::cout << unfilled << ": reached end (filled space?); return 0" << std::endl;
-	exit(0);
+	//exit(0);
 	return 0; //reached end
 }
 

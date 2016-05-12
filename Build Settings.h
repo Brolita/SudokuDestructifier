@@ -26,7 +26,7 @@
 
 #define lineprint std::cout << __LINE__ << std::endl
 
-#define BOXSIZE 3
+#define BOXSIZE 2
 #define SIZE ( BOXSIZE * BOXSIZE )
 #define COLSIZE ( BOXSIZE * BOXSIZE )
 #define ROWSIZE ( BOXSIZE * BOXSIZE )
@@ -45,6 +45,15 @@
 #define PRUNE_ASSIGN 0.4
 #define VALIDATE_ASSIGN 0.7
 #define DEPENDENCYSIZE 3 * (SIZE-1) * SIZE
+
+//For Testing
+#define MAXTIME 10 //in seconds
+#define NPOLICY 10
+#define NASSIGN 10
+#define TOTALPOLICY 1000
+#define TOTALASSIGN 100
+#define NPUZZLES 10
+#define STRBUF 200
  
 //For Generator
 #define GENERATORS 10

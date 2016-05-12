@@ -208,13 +208,13 @@ bool Solver::BruteSolve(Board& board) { //DFS for testing Solve()
 		if(board[ci] == 0) {
 			solved = 0;
 			for(int vi = 1; vi < SIZE + 1; ++vi) {
-				if(Solver::CanPlace(vi, board, ci)) {
+				//if(Solver::CanPlace(vi, board, ci)) {
 					board[ci] = vi;
 					if(BruteSolve(board)) return 1;
 					else board[ci] = 0;
-				}
+				//}
 			}
 		}
 	}
-	return solved;
+	return solved && board.isValid();
 }
